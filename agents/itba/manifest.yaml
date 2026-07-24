@@ -1,0 +1,101 @@
+schema: 2
+name: itba
+display_name: IT Business Analyst
+version: 1.1.0
+description: >
+  Business analysis agent for auditing source material, planning research,
+  defining foundations, designing requirements, and producing BA documentation.
+instructions: agent.md
+skills:
+  - audit
+  - phase-0-research-plan
+  - phase-1-foundation
+  - phase-2-design
+  - phase-3-document
+  - ui-to-spec
+templates:
+  - Audit-Report
+  - BA-Document
+knowledge:
+  shared: true
+  project: true
+output:
+  format: markdown
+  template: BA-Document
+resolution:
+  max_skills: 3
+  fallback_skills:
+    - audit
+  default_template: BA-Document
+  rules:
+    - id: ui-review
+      priority: 100
+      when_any:
+        - ui
+        - ux
+        - screen
+        - interface
+        - mockup
+        - wireframe
+        - giao diện
+        - màn hình
+      skills:
+        - ui-to-spec
+        - audit
+      template: Audit-Report
+    - id: source-audit
+      priority: 90
+      when_any:
+        - audit
+        - review requirement
+        - gap analysis
+        - kiểm tra tài liệu
+        - rà soát
+      skills:
+        - audit
+      template: Audit-Report
+    - id: research-plan
+      priority: 80
+      when_any:
+        - research plan
+        - discovery
+        - kế hoạch nghiên cứu
+      skills:
+        - phase-0-research-plan
+    - id: foundation
+      priority: 70
+      when_any:
+        - scope
+        - stakeholder
+        - objective
+        - foundation
+        - phạm vi
+        - mục tiêu
+      skills:
+        - phase-1-foundation
+    - id: requirements-design
+      priority: 60
+      when_any:
+        - requirement
+        - business rule
+        - use case
+        - acceptance criteria
+        - yêu cầu
+        - nghiệp vụ
+      skills:
+        - phase-2-design
+    - id: document
+      priority: 50
+      when_any:
+        - ba document
+        - specification
+        - đặc tả
+        - tài liệu ba
+      skills:
+        - phase-3-document
+      template: BA-Document
+tags:
+  - business-analysis
+  - requirements
+  - documentation
+category: Business Analysis

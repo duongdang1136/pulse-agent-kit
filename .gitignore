@@ -18,3 +18,11 @@ Thumbs.db
 
 # Node (nếu sau này có tooling)
 node_modules/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
