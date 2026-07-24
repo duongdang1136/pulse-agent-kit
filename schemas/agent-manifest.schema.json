@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "version",
+    "agent",
+    "entrypoint",
+    "commands",
+    "skills"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "agent": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "entrypoint": {
+      "type": "string"
+    },
+    "output_template": {
+      "type": "string"
+    },
+    "commands": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "skills": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "path",
+          "required"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,6 @@
+version: 1
+tools:
+  - id: caveman
+    path: tools/caveman/tool.md
+    status: optional
+    upstream: https://github.com/JuliusBrussee/caveman

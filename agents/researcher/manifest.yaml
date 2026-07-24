@@ -1,0 +1,19 @@
+version: 1
+agent: researcher
+entrypoint: agents/researcher/agent.md
+output_template: agents/researcher/templates/Research-Report.md
+commands:
+  research:
+    description: End-to-end evidence-based research orchestration
+    pipeline: [rag-router, research-web, research-github, research-community, synthesize]
+    policy:
+      parallel_sources: true
+      require_citations: true
+      stop_on_rag_hit: false
+      minimum_source_types: 2
+skills:
+  rag-router: {path: agents/researcher/skills/rag-router.md, required: true}
+  research-web: {path: agents/researcher/skills/research-web.md, required: true}
+  research-github: {path: agents/researcher/skills/research-github.md, required: false}
+  research-community: {path: agents/researcher/skills/research-community.md, required: false}
+  synthesize: {path: agents/researcher/skills/synthesize.md, required: true}
