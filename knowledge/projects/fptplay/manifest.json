@@ -3,12 +3,117 @@
   "project": "fptplay",
   "documents": [
     {
+      "id": "customer-data-platform-cdp",
+      "title": "Customer Data Platform Cdp",
+      "project": "fptplay",
+      "source": "C:\\Dương\\Me\\pulse-agent-kit\\projects\\fptplay\\source-docs\\Customer_Data_Platform_CDP.pdf",
+      "page": "pages/customer-data-platform-cdp.md",
+      "checksum": "e1599a8fed8dc2dd05517f5af74e9a94880735aaa56837ac95a3fdd955b523f5",
+      "source_type": "pdf",
+      "status": "indexed",
+      "created_at": "2026-07-24",
+      "updated_at": "2026-07-24",
+      "metadata": {
+        "copied_to": "C:/Dương/Me/pulse-agent-kit/projects/fptplay/source-docs/Customer_Data_Platform_CDP.pdf"
+      },
+      "index_fingerprint": "autorig-v2:hash:pulse-hash-v2:adaptive-v1",
+      "char_count": 8452,
+      "chunk_strategy": "recursive",
+      "chunk_count": 10,
+      "embedding_provider": "hash",
+      "embedding_model": "pulse-hash-v2"
+    },
+    {
+      "id": "fpl-streaming-specifications-v1-1",
+      "title": "Fpl Streaming Specifications V1.1",
+      "project": "fptplay",
+      "source": "C:\\Dương\\Me\\pulse-agent-kit\\projects\\fptplay\\source-docs\\fpl_streaming-specifications_v1.1.docx",
+      "page": "pages/fpl-streaming-specifications-v1-1.md",
+      "checksum": "dcbf62ef503bb5a575b9ce5c3a1cbaad9126bd483c1278436900352cbbd53e03",
+      "source_type": "docx",
+      "status": "indexed",
+      "created_at": "2026-07-24",
+      "updated_at": "2026-07-24",
+      "metadata": {
+        "copied_to": "C:/Dương/Me/pulse-agent-kit/projects/fptplay/source-docs/fpl_streaming-specifications_v1.1.docx"
+      },
+      "index_fingerprint": "autorig-v2:hash:pulse-hash-v2:adaptive-v1",
+      "char_count": 232344,
+      "chunk_strategy": "streaming_hierarchical",
+      "chunk_count": 88,
+      "embedding_provider": "hash",
+      "embedding_model": "pulse-hash-v2"
+    },
+    {
+      "id": "glossary-content-management",
+      "title": "Glossary – Content Management",
+      "project": "fptplay",
+      "source": "C:\\Dương\\Me\\pulse-agent-kit\\projects\\fptplay\\source-docs\\Glossary – Content Management.pdf",
+      "page": "pages/glossary-content-management.md",
+      "checksum": "3fce57d647d697603163b5f8997d5550eb28de622661cdf1bf68000d776b7b56",
+      "source_type": "pdf",
+      "status": "indexed",
+      "created_at": "2026-07-24",
+      "updated_at": "2026-07-24",
+      "metadata": {
+        "copied_to": "C:/Dương/Me/pulse-agent-kit/projects/fptplay/source-docs/Glossary – Content Management.pdf"
+      },
+      "index_fingerprint": "autorig-v2:hash:pulse-hash-v2:adaptive-v1",
+      "char_count": 38342,
+      "chunk_strategy": "hierarchical",
+      "chunk_count": 34,
+      "embedding_provider": "hash",
+      "embedding_model": "pulse-hash-v2"
+    },
+    {
+      "id": "in-app-event-tracking-specs",
+      "title": "In App Event Tracking Specs",
+      "project": "fptplay",
+      "source": "C:\\Dương\\Me\\pulse-agent-kit\\projects\\fptplay\\source-docs\\In_app_event_tracking_specs.pdf",
+      "page": "pages/in-app-event-tracking-specs.md",
+      "checksum": "f2630c34d3417faf9e2f876338775b8c79c24e2a5fc46e5b670904d505cba075",
+      "source_type": "pdf",
+      "status": "indexed",
+      "created_at": "2026-07-24",
+      "updated_at": "2026-07-24",
+      "metadata": {
+        "copied_to": "C:/Dương/Me/pulse-agent-kit/projects/fptplay/source-docs/In_app_event_tracking_specs.pdf"
+      },
+      "index_fingerprint": "autorig-v2:hash:pulse-hash-v2:adaptive-v1",
+      "char_count": 81840,
+      "chunk_strategy": "hierarchical",
+      "chunk_count": 64,
+      "embedding_provider": "hash",
+      "embedding_model": "pulse-hash-v2"
+    },
+    {
+      "id": "notification",
+      "title": "Notification",
+      "project": "fptplay",
+      "source": "C:\\Dương\\Me\\pulse-agent-kit\\projects\\fptplay\\source-docs\\Notification.pdf",
+      "page": "pages/notification.md",
+      "checksum": "12005548b2baad5c717f2889c97a82fe3dfc02f19598a60c0bc83c87743dea11",
+      "source_type": "pdf",
+      "status": "indexed",
+      "created_at": "2026-07-24",
+      "updated_at": "2026-07-24",
+      "metadata": {
+        "copied_to": "C:/Dương/Me/pulse-agent-kit/projects/fptplay/source-docs/Notification.pdf"
+      },
+      "index_fingerprint": "autorig-v2:hash:pulse-hash-v2:adaptive-v1",
+      "char_count": 27829,
+      "chunk_strategy": "hierarchical",
+      "chunk_count": 28,
+      "embedding_provider": "hash",
+      "embedding_model": "pulse-hash-v2"
+    },
+    {
       "id": "playback-events-ad-events-tracking",
       "title": "Playback Events Ad Events Tracking",
       "project": "fptplay",
-      "source": "C:\\Users\\Admin\\Documents\\docss\\Playback_events_ad_events_tracking.pdf",
+      "source": "C:\\Dương\\Me\\pulse-agent-kit\\projects\\fptplay\\source-docs\\Playback_events_ad_events_tracking.pdf",
       "page": "pages/playback-events-ad-events-tracking.md",
-      "checksum": "3208415ae118ef4894c6c650449087e4009f6a9a0946a170544bb73bbe480972",
+      "checksum": "b2526b8d9fe7d163f2d587c5e3843628e91dcc8f2d52d1e64c9df70d6a82ab00",
       "source_type": "pdf",
       "status": "indexed",
       "created_at": "2026-07-24",
@@ -17,6 +122,30 @@
       "char_count": 52423,
       "chunk_strategy": "hierarchical",
       "chunk_count": 40,
+      "embedding_provider": "hash",
+      "embedding_model": "pulse-hash-v2",
+      "metadata": {
+        "copied_to": "C:/Dương/Me/pulse-agent-kit/projects/fptplay/source-docs/Playback_events_ad_events_tracking.pdf"
+      }
+    },
+    {
+      "id": "sports-data",
+      "title": "Sports Data",
+      "project": "fptplay",
+      "source": "C:\\Dương\\Me\\pulse-agent-kit\\projects\\fptplay\\source-docs\\Sports_data.pdf",
+      "page": "pages/sports-data.md",
+      "checksum": "fc6106cb14a3abfcf7f1d6a9e3a1d020fe86c537d0e8980f42406349a5fe64a0",
+      "source_type": "pdf",
+      "status": "indexed",
+      "created_at": "2026-07-24",
+      "updated_at": "2026-07-24",
+      "metadata": {
+        "copied_to": "C:/Dương/Me/pulse-agent-kit/projects/fptplay/source-docs/Sports_data.pdf"
+      },
+      "index_fingerprint": "autorig-v2:hash:pulse-hash-v2:adaptive-v1",
+      "char_count": 67684,
+      "chunk_strategy": "hierarchical",
+      "chunk_count": 54,
       "embedding_provider": "hash",
       "embedding_model": "pulse-hash-v2"
     }

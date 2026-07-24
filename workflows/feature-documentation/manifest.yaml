@@ -1,0 +1,32 @@
+schema: 1
+name: feature-documentation
+display_name: Feature Documentation
+version: 1.0.0
+description: >
+  Research a product feature, identify evidence and gaps, clarify unresolved
+  business decisions, and produce a traceable business analysis document.
+instructions: workflow.md
+inputs:
+  required: [project, feature, user_requirements]
+  optional: [target_users, constraints, reference_links]
+stages:
+  - id: research
+    agent: researcher
+    skills: [rag-router, research-github, research-web, synthesize]
+    consumes: [project, feature, user_requirements, project_sources, project_knowledge]
+    output: Research-Report
+    handoff_to: analysis
+  - id: analysis
+    agent: itba
+    skills: [audit, phase-1-foundation, phase-2-design, phase-3-document, ui-to-spec]
+    consumes: [project, feature, user_requirements, research.output, user_clarifications, project_sources, project_knowledge]
+    output: BA-Document
+interaction:
+  clarification_required_when:
+    - required_input_missing
+    - requirements_conflict
+    - source_conflict
+    - business_decision_missing
+    - acceptance_criteria_not_derivable
+    - data_definition_ambiguous
+tags: [research, business-analysis, feature-documentation]

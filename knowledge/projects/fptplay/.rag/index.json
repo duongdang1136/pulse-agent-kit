@@ -4,6 +4,6 @@
   "provider": "hash",
   "model": "pulse-hash-v2",
   "dimensions": 384,
-  "chunk_count": 40,
+  "chunk_count": 318,
   "fingerprint": "autorig-v2:hash:pulse-hash-v2:adaptive-v1"
 }
