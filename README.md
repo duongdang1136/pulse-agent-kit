@@ -55,7 +55,7 @@ pulse-agent-kit/
 
 **Bước 1: Clone**
 ```bash
-git clone https://github.com/pulse-labs-tech/pulse-agent-kit
+git clone https://github.com/duongdang1136/pulse-agent-kit
 cd pulse-agent-kit
 ```
 
