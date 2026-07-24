@@ -143,7 +143,7 @@ Prototype:      [Figma URL / N/A]
 ### REQ-[ID]: [Tên requirement]
 
 **Taxonomy:** [T1/T2/T3/T4]  **Priority:** [Must/Should/Could]  
-**Prototype:** [Xem prototype →](URL#frame-id)
+**Prototype:** {{prototype_url}}
 
 **Acceptance Criteria:**
 - Given [...] / When [...] / Then [...]

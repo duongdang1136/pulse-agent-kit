@@ -1,6 +1,6 @@
 # Tool: [Tool Name] 🔧
 
-**Repo:** [https://github.com/owner/repo]  
+**Repo:** {{repository_url}}
 **Version:** [vX.Y.Z]  
 **License:** [MIT / Apache / etc]  
 **Agents:** [researcher / itba / both]
