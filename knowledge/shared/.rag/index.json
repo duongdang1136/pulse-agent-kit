@@ -1,5 +1,28 @@
 {
   "version": "1.0",
-  "updated_at": "2026-07-23",
-  "items": []
+  "updated_at": "2026-07-24",
+  "items": [
+    {
+      "id": "example-nextjs-app-router",
+      "title": "Next.js App Router — Overview & Best Practices",
+      "path": "pages/nextjs-app-router.md",
+      "tags": ["nextjs", "react", "app-router", "ssr", "frontend"],
+      "keywords": ["next.js", "app router", "server component", "rsc", "layouts", "routing"],
+      "category": "TechStack",
+      "last_updated": "2026-07-24",
+      "ttl_days": 90,
+      "summary": "Hướng dẫn Next.js App Router: server components, layouts, route handlers, caching strategy, và khi nào dùng App Router vs Pages Router."
+    },
+    {
+      "id": "example-jwt-auth",
+      "title": "JWT Authentication — Pattern & Security",
+      "path": "pages/jwt-auth.md",
+      "tags": ["auth", "jwt", "security", "backend"],
+      "keywords": ["jwt", "json web token", "access token", "refresh token", "authentication", "authorization"],
+      "category": "Security",
+      "last_updated": "2026-07-24",
+      "ttl_days": 30,
+      "summary": "JWT best practices: access + refresh token pattern, storage (httpOnly cookie vs localStorage), expiry strategy, rotation, và common pitfalls."
+    }
+  ]
 }
