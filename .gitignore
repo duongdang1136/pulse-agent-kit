@@ -1,0 +1,20 @@
+# Local overrides
+.env
+.env.local
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Runtime / agent state
+.agent/
+*.processing
+
+# Node (nếu sau này có tooling)
+node_modules/
