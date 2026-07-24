@@ -5,10 +5,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pulse-agent-kit"
 version = "0.2.1"
-description = "Project workspace, knowledge ingestion, and agent kit CLI for business analysis workflows"
+description = "Provider-independent, repository-native protocol for AI agents, workflows, project knowledge, and traceable outputs"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = { text = "LICENSE" }
 authors = [{ name = "Pulse Agent Kit contributors" }]
 dependencies = [
     "PyYAML>=6.0.2,<7",

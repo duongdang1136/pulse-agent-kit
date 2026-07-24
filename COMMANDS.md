@@ -1,6 +1,19 @@
-# COMMANDS.md — Command Reference
+# COMMANDS.md — Command and CLI Reference
 
-Mỗi command kích hoạt một skill + template cụ thể. Paste command vào LLM cùng với skill file tương ứng.
+> `PULSE.md` là entry point chính cho AI.
+>
+> Các slash command trong tài liệu này là shorthand hoặc legacy interaction
+> patterns. Người dùng không bắt buộc phải copy từng skill vào AI.
+>
+> Với flow multi-agent, hãy ưu tiên workflow package trong `workflows/`.
+
+## Recommended usage
+
+```text
+Đọc PULSE.md.
+Sử dụng workflow feature-documentation.
+Project: FPTPlay.
+Thực hiện Researcher trước, sau đó handoff sang ITBA.
 
 ---
 

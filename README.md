@@ -1,104 +1,310 @@
-# pulse-agent-kit 🧠
+# Pulse Agent Kit
 
-Bộ kit agent AI platform-agnostic — tích hợp sẵn 2 agent chuyên biệt và hệ thống quản lý skill, tool, và knowledge (RAG).
+Pulse là một repository protocol độc lập với AI provider, dùng để tổ chức:
 
-Pull về. Paste skill vào LLM. Chạy.
+- agent instructions;
+- reusable skills;
+- output templates;
+- multi-agent workflows;
+- project source documents;
+- normalized knowledge và RAG indexes.
 
----
+Pulse không phải LLM runtime.
 
-## Agents có sẵn
+Pulse không gọi OpenAI, Anthropic, Gemini hoặc model provider nào. Không cần API key. Người dùng đưa repository cho một AI có khả năng đọc file hoặc GitHub, sau đó AI tuân thủ `PULSE.md` để thực hiện công việc.
 
-| Agent | Vai trò | Command |
-|---|---|---|
-| `researcher` | Research web, GitHub, community — output Research Report | `/research` |
-| `itba` | IT Business Analyst — BA, wireframe, audit, docs — output BA Document | `/ba`, `/audit`, `/bpmn`, `/usecase`, `/screen` |
+## Use case chính
 
----
-
-## Cấu trúc thư mục
-
-```
-pulse-agent-kit/
-├── agents/
-│   ├── researcher/
-│   │   ├── agent.md             ← Role + cách dùng
-│   │   ├── skills/              ← Các skill atomic (research-web, github, community, rag-router)
-│   │   └── templates/           ← Research-Report.md — output blueprint
-│   │
-│   └── itba/
-│       ├── agent.md             ← Role + cách dùng
-│       ├── skills/              ← Các skill theo phase (phase-0 đến phase-3, audit, ui-to-spec)
-│       └── templates/           ← BA-Document.md, Audit-Report.md — output blueprints
-│
-├── tools/
-│   ├── README.md                ← Hướng dẫn thêm tool mới
-│   └── _template/
-│       └── tool.md              ← Template cho mỗi tool entry
-│
-├── knowledge/
-│   ├── README.md                ← Hướng dẫn ingest + quản lý knowledge
-│   ├── shared/                  ← Wiki chung — researcher agent dùng
-│   │   ├── .rag/index.json      ← Search index (auto-generated)
-│   │   └── pages/               ← Các file .md knowledge
-│   │
-│   └── projects/                ← Per-project knowledge — itba agent dùng
-│       └── <project-name>/
-│           ├── .rag/index.json
-│           └── pages/
-│
-└── COMMANDS.md                  ← Command reference đầy đủ
+```text
+User cung cấp repository Pulse
+        ↓
+AI đọc PULSE.md
+        ↓
+AI xác định project và workflow
+        ↓
+Researcher phân tích nguồn tài liệu
+        ↓
+Research Report
+        ↓
+ITBA nhận report và yêu cầu người dùng
+        ↓
+Trao đổi các business decision còn thiếu
+        ↓
+BA Document
 ```
 
----
+Ví dụ hiện tại:
 
-## Quickstart — 3 bước
+```text
+Project: FPTPlay
+Workflow: feature-documentation
+Agents: Researcher → ITBA
+```
 
-**Bước 1: Clone**
+## Quick start
+
+### 1. Clone repository
+
 ```bash
-git clone https://github.com/duongdang1136/pulse-agent-kit
+git clone https://github.com/duongdang1136/pulse-agent-kit.git
 cd pulse-agent-kit
 ```
 
-**Bước 2: Chọn agent + command**
+Hoặc cung cấp trực tiếp URL repository cho AI:
+
+```text
+https://github.com/duongdang1136/pulse-agent-kit
 ```
-/research "streaming platform architecture"
-/ba "user login với SSO"
-/audit "checkout screen"
+
+### 2. Yêu cầu AI đọc protocol
+
+```text
+Hãy đọc repository pulse-agent-kit này.
+
+Đọc PULSE.md trước và tuân thủ repository operating protocol.
+Không tự bịa requirement hoặc business rule.
 ```
 
-**Bước 3: Paste skill vào LLM**
-- Mở file skill tương ứng trong `agents/<agent>/skills/`
-- Paste vào ChatGPT / Claude / Cursor / bất kỳ LLM nào
-- Paste thêm context của bạn → Chạy
+### 3. Giao task
 
----
+```text
+Sử dụng workflow feature-documentation.
 
-## Thêm project knowledge (ITBA)
+Project: FPTPlay
+Feature: Notification Center
+
+Yêu cầu:
+- hỗ trợ push notification và in-app notification;
+- segmentation;
+- scheduling;
+- tracking;
+- audit log.
+
+Thực hiện Researcher stage trước.
+Sau đó dùng Research Report làm input cho ITBA.
+Hỏi tôi khi cần business decision không thể suy ra từ tài liệu.
+```
+
+AI phải thực hiện theo trình tự:
+
+```text
+PULSE.md
+  ↓
+workflows/feature-documentation/
+  ↓
+agents/researcher/
+  ↓
+Research-Report
+  ↓
+agents/itba/
+  ↓
+BA-Document
+```
+
+## Repository structure
+
+```text
+pulse-agent-kit/
+├── PULSE.md
+├── README.md
+├── COMMANDS.md
+│
+├── agents/
+│   ├── researcher/
+│   │   ├── manifest.yaml
+│   │   ├── agent.md
+│   │   ├── skills/
+│   │   └── templates/
+│   │
+│   └── itba/
+│       ├── manifest.yaml
+│       ├── agent.md
+│       ├── skills/
+│       └── templates/
+│
+├── workflows/
+│   └── feature-documentation/
+│       ├── manifest.yaml
+│       └── workflow.md
+│
+├── projects/
+│   └── fptplay/
+│       └── source-docs/
+│
+├── knowledge/
+│   ├── shared/
+│   └── projects/
+│       └── fptplay/
+│
+├── tools/
+├── schemas/
+├── scripts/
+├── pulse/
+└── tests/
+```
+
+## Core concepts
+
+### Repository protocol
+
+`PULSE.md` là entry point bắt buộc cho AI.
+
+Nó định nghĩa:
+
+- thứ tự đọc repository;
+- source priority;
+- non-invention rules;
+- workflow execution;
+- agent handoff;
+- clarification protocol;
+- output traceability.
+
+### Agent package
+
+Agent package chứa:
+
+```text
+agents/<agent>/
+├── manifest.yaml
+├── agent.md
+├── skills/
+└── templates/
+```
+
+Agent là instruction package, không phải Python object và không cần model provider.
+
+### Workflow package
+
+Workflow package chứa:
+
+```text
+workflows/<workflow>/
+├── manifest.yaml
+└── workflow.md
+```
+
+Workflow xác định:
+
+- required inputs;
+- ordered stages;
+- agent được dùng ở từng stage;
+- skills cần đọc;
+- output template;
+- handoff giữa các agent;
+- điều kiện phải hỏi lại người dùng.
+
+### Project sources
+
+Tài liệu gốc của dự án nằm tại:
+
+```text
+projects/<project>/source-docs/
+```
+
+AI ưu tiên tài liệu nguồn trước normalized knowledge.
+
+### Knowledge và RAG
+
+Normalized knowledge nằm tại:
+
+```text
+knowledge/projects/<project>/
+```
+
+RAG được dùng để tìm vùng nội dung liên quan, không thay thế source traceability.
+
+## CLI
+
+CLI là supporting tool dùng để duy trì repository, không phải AI runtime.
+
+Các nhóm chức năng chính:
 
 ```bash
-# Tạo project mới
-mkdir -p knowledge/projects/fptplay/pages
-
-# Drop file .md vào pages/
-cp your-docs/*.md knowledge/projects/fptplay/pages/
-
-# Chạy ingest (cập nhật index.json)
-# Xem knowledge/README.md để biết cách ingest
+pulse workspace ...
+pulse knowledge ...
+pulse rag ...
 ```
 
----
-
-## Mở rộng — Thêm agent mới
+Ví dụ:
 
 ```bash
-mkdir -p agents/fe-manager/{skills,templates}
-# Xem agents/researcher/agent.md để biết format
+pulse knowledge import fptplay projects/fptplay/source-docs --no-copy --overwrite
+pulse rag build fptplay
+pulse rag query fptplay "notification scheduling"
 ```
 
----
+CLI hỗ trợ:
 
-## Related
+- khởi tạo workspace;
+- import tài liệu;
+- normalize knowledge;
+- build và query RAG;
+- validate repository artifacts.
 
-- [COMMANDS.md](./COMMANDS.md) — Tất cả commands
-- [knowledge/README.md](./knowledge/README.md) — RAG + ingest guide
-- [tools/README.md](./tools/README.md) — Tool registry guide
+AI vẫn có thể sử dụng Pulse bằng cách đọc trực tiếp repository mà không cần chạy CLI.
+
+## Development
+
+Cài project và development dependencies:
+
+```bash
+python -m pip install -e ".[dev]"
+```
+
+Chạy validation:
+
+```bash
+python scripts/validate_repo.py
+python scripts/validate_workflows.py
+```
+
+Chạy test:
+
+```bash
+python -m pytest -q
+```
+
+## Current workflow
+
+Workflow end-to-end hiện có:
+
+```text
+feature-documentation
+```
+
+Nó phối hợp:
+
+```text
+Researcher
+    ↓ Research-Report
+ITBA
+    ↓ BA-Document
+```
+
+Xem:
+
+```text
+workflows/feature-documentation/
+```
+
+## Principles
+
+Pulse tuân thủ các nguyên tắc:
+
+1. Provider independent.
+2. Repository native.
+3. AI readable.
+4. Evidence before inference.
+5. Không tự bịa business requirements.
+6. Agent handoff phải giữ traceability.
+7. Python chỉ là supporting tooling.
+8. Workflow và instruction quality quan trọng hơn runtime complexity.
+
+## Documentation
+
+- [`PULSE.md`](PULSE.md) — protocol AI phải đọc đầu tiên.
+- [`COMMANDS.md`](COMMANDS.md) — CLI và legacy command reference.
+- [`workflows/`](workflows/) — workflow packages.
+- [`agents/`](agents/) — agent packages.
+- [`knowledge/README.md`](knowledge/README.md) — knowledge và RAG.
+- [`tools/README.md`](tools/README.md) — tool registry.
