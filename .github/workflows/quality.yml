@@ -74,5 +74,8 @@ jobs:
         with:
           args: >-
             --config lychee.toml
+            README.md
+            PULSE.md
+            COMMANDS.md
             './**/*.md'
           fail: true
