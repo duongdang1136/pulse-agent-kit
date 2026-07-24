@@ -1,0 +1,8 @@
+# Lychee link-checker configuration.
+# Email addresses are ignored; only URLs and local Markdown links are checked.
+include_mail = false
+no_progress = true
+max_retries = 2
+retry_wait_time = 2
+accept = [200, 204, 206, 429]
+exclude_path = [".git", ".venv", "venv", "node_modules"]
