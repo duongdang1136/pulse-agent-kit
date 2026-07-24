@@ -4,13 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pulse-agent-kit"
-version = "0.1.0"
-description = "Project workspace and agent kit CLI for business analysis workflows"
+version = "0.2.1"
+description = "Project workspace, knowledge ingestion, and agent kit CLI for business analysis workflows"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Pulse Agent Kit contributors" }]
-dependencies = []
+dependencies = [
+  "openpyxl>=3.1,<4",
+  "pypdf>=5,<7",
+  "python-docx>=1.1,<2",
+]
 
 [project.scripts]
 pulse = "pulse.cli:main"
