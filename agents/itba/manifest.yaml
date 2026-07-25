@@ -7,15 +7,33 @@ description: >
   defining foundations, designing requirements, and producing BA documentation.
 instructions: agent.md
 skills:
-  - audit
-  - phase-0-research-plan
-  - phase-1-foundation
-  - phase-2-design
-  - phase-3-document
-  - ui-to-spec
+  - heuristic-audit
+  - component-audit
+  - layout-audit
+  - research-intake-execution
+  - cms-tools
+  - persona
+  - ia
+  - layout
+  - token
+  - screen
+  - bpmn
+  - usecase
+  - wireframe-text
+  - wireframe-lofi
+  - wireframe-hifi
+  - stakeholder-review
+  - design-critique
+  - business-rules
+  - acceptance-criteria
+  - api-doc
+  - db-schema
+  - metrics
 templates:
   - Audit-Report
   - BA-Document
+  - Foundation
+  - Research-Intake-Execution
 knowledge:
   shared: true
   project: true
@@ -23,9 +41,9 @@ output:
   format: markdown
   template: BA-Document
 resolution:
-  max_skills: 3
+  max_skills: 4
   fallback_skills:
-    - audit
+    - heuristic-audit
   default_template: BA-Document
   rules:
     - id: ui-review
@@ -40,8 +58,8 @@ resolution:
         - giao diện
         - màn hình
       skills:
-        - ui-to-spec
-        - audit
+        - screen
+        - heuristic-audit
       template: Audit-Report
     - id: source-audit
       priority: 90
@@ -52,27 +70,53 @@ resolution:
         - kiểm tra tài liệu
         - rà soát
       skills:
-        - audit
+        - heuristic-audit
+      template: Audit-Report
+    - id: component-audit
+      priority: 89
+      when_any:
+        - component audit
+        - audit component
+        - audit-component
+      skills:
+        - component-audit
+      template: Audit-Report
+    - id: layout-audit
+      priority: 88
+      when_any:
+        - layout audit
+        - audit layout
+        - audit-layout
+      skills:
+        - layout-audit
       template: Audit-Report
     - id: research-plan
       priority: 80
       when_any:
-        - research plan
-        - discovery
-        - kế hoạch nghiên cứu
+        - research intake
+        - execution plan
+        - intake
+        - handoff
+        - kế hoạch thực thi
       skills:
-        - phase-0-research-plan
+        - research-intake-execution
+      template: Research-Intake-Execution
     - id: foundation
       priority: 70
       when_any:
-        - scope
-        - stakeholder
-        - objective
+        - persona
+        - mental model
+        - information architecture
+        - ia
+        - layout
+        - token
         - foundation
-        - phạm vi
-        - mục tiêu
       skills:
-        - phase-1-foundation
+        - persona
+        - ia
+        - layout
+        - token
+      template: Foundation
     - id: requirements-design
       priority: 60
       when_any:
@@ -83,7 +127,46 @@ resolution:
         - yêu cầu
         - nghiệp vụ
       skills:
-        - phase-2-design
+        - usecase
+        - acceptance-criteria
+        - business-rules
+    - id: wireframe
+      priority: 58
+      when_any:
+        - wireframe
+        - wireframe text
+      skills:
+        - wireframe-text
+    - id: wireframe-lofi
+      priority: 57
+      when_any:
+        - wireframe lo-fi
+        - wireframe lofi
+        - lo-fi html
+        - lofi html
+      skills:
+        - wireframe-lofi
+    - id: wireframe-hifi
+      priority: 56
+      when_any:
+        - wireframe hi-fi
+        - wireframe hifi
+        - hi-fi html
+        - hifi html
+      skills:
+        - wireframe-hifi
+    - id: cms-tools
+      priority: 55
+      when_any:
+        - cms
+        - admin tool
+        - back-office
+        - moderation
+        - content management
+        - công cụ quản trị
+        - quản trị nội dung
+      skills:
+        - cms-tools
     - id: document
       priority: 50
       when_any:
@@ -92,8 +175,41 @@ resolution:
         - đặc tả
         - tài liệu ba
       skills:
-        - phase-3-document
+        - usecase
+        - acceptance-criteria
+        - api-doc
+        - db-schema
       template: BA-Document
+    - id: api-document
+      priority: 45
+      when_any:
+        - api
+        - endpoint
+        - schema
+        - contract
+      skills:
+        - api-doc
+    - id: database-document
+      priority: 44
+      when_any:
+        - database
+        - db
+        - table
+        - collection
+        - erd
+      skills:
+        - db-schema
+    - id: metrics-document
+      priority: 43
+      when_any:
+        - metric
+        - metrics
+        - logging
+        - analytics
+        - analyzing
+        - tracking
+      skills:
+        - metrics
 tags:
   - business-analysis
   - requirements

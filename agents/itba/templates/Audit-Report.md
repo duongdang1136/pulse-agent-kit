@@ -32,7 +32,7 @@ Version reviewed: [Figma link / screenshot date / component version]
 
 ## 🔴 Critical Issues
 
-> Skill: `skills/audit.md` — phải fix trước khi launch
+> Skill: `skills/heuristic-audit.md` — phải fix trước khi launch
 
 ### [CRITICAL-01]: [Tên issue]
 - **Type:** [Heuristic H1-H5 / Component Dim 1-4 / Layout]

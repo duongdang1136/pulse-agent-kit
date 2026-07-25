@@ -411,14 +411,14 @@ class RepositoryValidator:
         Manifest v2:
 
             skills:
-              - audit
-              - ui-to-spec
+              - heuristic-audit
+              - screen
 
         Legacy manifest:
 
             skills:
-              audit: skills/audit.md
-              ui-to-spec: skills/ui-to-spec.md
+              heuristic-audit: skills/heuristic-audit.md
+              screen: skills/screen.md
         """
 
         if value is None:

@@ -15,11 +15,17 @@ stages:
     skills: [rag-router, research-github, research-web, synthesize]
     consumes: [project, feature, user_requirements, project_sources, project_knowledge]
     output: Research-Report
+    handoff_to: research_intake
+  - id: research_intake
+    agent: itba
+    skills: [research-intake-execution]
+    consumes: [project, feature, user_requirements, research.output, user_clarifications, project_sources, project_knowledge]
+    output: Research-Intake-Execution
     handoff_to: analysis
   - id: analysis
     agent: itba
-    skills: [audit, phase-1-foundation, phase-2-design, phase-3-document, ui-to-spec]
-    consumes: [project, feature, user_requirements, research.output, user_clarifications, project_sources, project_knowledge]
+    skills: [heuristic-audit, component-audit, layout-audit, screen, bpmn, usecase, acceptance-criteria, business-rules, wireframe-text, wireframe-lofi, wireframe-hifi, stakeholder-review, design-critique, api-doc, db-schema, metrics, cms-tools]
+    consumes: [project, feature, user_requirements, research.output, research_intake.output, user_clarifications, project_sources, project_knowledge]
     output: BA-Document
 interaction:
   clarification_required_when:

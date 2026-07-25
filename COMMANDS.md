@@ -13,7 +13,8 @@
 Đọc PULSE.md.
 Sử dụng workflow feature-documentation.
 Project: FPTPlay.
-Thực hiện Researcher trước, sau đó handoff sang ITBA.
+Thực hiện Researcher trước, sau đó ITBA tạo Research Intake & Execution, cuối cùng mới tạo BA Document.
+```
 
 ---
 
@@ -47,70 +48,74 @@ Thực hiện Researcher trước, sau đó handoff sang ITBA.
 
 ## 🧩 ITBA Agent
 
-### Phase 0 — Research & Plan
+### Research Intake & Execution
 
 | Command | Skill cần paste | Template output |
 |---|---|---|
-| `/ba <feature>` | `agents/itba/skills/phase-0-research-plan.md` | BA Document — full flow Phase 0→3 |
-| `/ba-plan <feature>` | `agents/itba/skills/phase-0-research-plan.md` | Research Report + Execution Plan |
-| `/ba-cr <change>` | `agents/itba/skills/phase-0-research-plan.md` + Change Request section | Change Impact Report |
+| `/research-intake <feature>` | `agents/itba/skills/research-intake-execution.md` | Research Intake & Execution |
+| `/execution-plan <feature>` | `agents/itba/skills/research-intake-execution.md` | Research Intake & Execution |
+| `/ba <feature>` | `agents/itba/skills/research-intake-execution.md` + document skills | Research Intake & Execution → BA Document |
 
-### Phase 1 — Foundation
+### Foundation — Optional
 
 | Command | Skill cần paste | Output section |
 |---|---|---|
-| `/persona <product>` | `agents/itba/skills/phase-1-foundation.md` → section Persona | User Persona & Mental Model |
-| `/ia <product>` | `agents/itba/skills/phase-1-foundation.md` → section IA | Information Architecture |
-| `/layout <product>` | `agents/itba/skills/phase-1-foundation.md` → section Layout | Layout System |
-| `/token <product>` | `agents/itba/skills/phase-1-foundation.md` → section Token | Token Registry |
+| `/persona <product>` | `agents/itba/skills/persona.md` | User Persona & Mental Model |
+| `/ia <product>` | `agents/itba/skills/ia.md` | Information Architecture |
+| `/layout <product>` | `agents/itba/skills/layout.md` | Layout System |
+| `/token <product>` | `agents/itba/skills/token.md` | Token Registry |
+
+Foundation dùng template riêng `agents/itba/templates/Foundation.md` và chỉ tạo khi người dùng yêu cầu.
 
 ### Phase 2 — Design & Validate
 
 | Command | Skill cần paste | Output section |
 |---|---|---|
-| `/wireframe <feature>` | `agents/itba/skills/phase-2-design.md` → Module Lo-fi | Wireframe Lo-fi |
-| `/wireframe-hifi <feature>` | `agents/itba/skills/phase-2-design.md` → Module Hi-fi | Hi-fidelity Prototype |
-| `/review-stakeholder` | `agents/itba/skills/phase-2-design.md` → Review Module A | Stakeholder Review |
-| `/review-design` | `agents/itba/skills/phase-2-design.md` → Review Module B | Design Critique |
+| `/wireframe-text <feature>` | `agents/itba/skills/wireframe-text.md` | Required text-only wireframe for BA Document |
+| `/wireframe-lofi <feature>` | `agents/itba/skills/wireframe-lofi.md` | Optional lo-fi HTML wireframe without color |
+| `/wireframe-hifi <feature>` | `agents/itba/skills/wireframe-hifi.md` | Optional hi-fi HTML wireframe with color |
+| `/review-stakeholder` | `agents/itba/skills/stakeholder-review.md` | Stakeholder Review |
+| `/review-design` | `agents/itba/skills/design-critique.md` | Design Critique |
 
 ### Phase 3 — Document
 
 | Command | Skill cần paste | Output section |
 |---|---|---|
-| `/srs <feature>` | `agents/itba/skills/phase-3-document.md` → SRS Doc | SRS Document |
-| `/api-doc <feature>` | `agents/itba/skills/phase-3-document.md` → API Contract | API Contract Doc |
-| `/db-schema <feature>` | `agents/itba/skills/phase-3-document.md` → DB Schema | DB Schema Doc |
-| `/logic <feature>` | `agents/itba/skills/phase-3-document.md` → Backend Logic | Backend Logic Doc |
-| `/metrics <feature>` | `agents/itba/skills/phase-3-document.md` → Metrics | Metrics Doc |
+| `/business-rules <feature>` | `agents/itba/skills/business-rules.md` | Business Rule Global |
+| `/acceptance-criteria <feature>` | `agents/itba/skills/acceptance-criteria.md` | Acceptance Criteria |
+| `/api-doc <feature>` | `agents/itba/skills/api-doc.md` | API Contract Doc |
+| `/db-schema <feature>` | `agents/itba/skills/db-schema.md` | DB Schema Doc |
+| `/metrics <feature>` | `agents/itba/skills/metrics.md` | Metrics Doc |
+| `/cms-tools <feature>` | `agents/itba/skills/cms-tools.md` | CMS/admin tool specification |
 
 ### Audit & UI-to-Spec
 
 | Command | Skill cần paste | Output |
 |---|---|---|
-| `/audit <screen>` | `agents/itba/skills/audit.md` → Heuristic Review | Audit Report |
-| `/audit-component <component>` | `agents/itba/skills/audit.md` → Component Audit | Component Audit |
-| `/audit-layout <page>` | `agents/itba/skills/audit.md` → Page Layout Audit | Layout Audit |
-| `/screen <screenshot>` | `agents/itba/skills/ui-to-spec.md` → Screen Description | Screen Description |
-| `/bpmn <flow>` | `agents/itba/skills/ui-to-spec.md` → BPMN section | BPMN Flow |
-| `/usecase <feature>` | `agents/itba/skills/ui-to-spec.md` → Use Case Detail | Use Case List |
+| `/audit <screen>` | `agents/itba/skills/heuristic-audit.md` | Heuristic Audit |
+| `/audit-component <component>` | `agents/itba/skills/component-audit.md` | Component Audit |
+| `/audit-layout <page>` | `agents/itba/skills/layout-audit.md` | Layout Audit |
+| `/screen <screenshot>` | `agents/itba/skills/screen.md` | Screen Specification |
+| `/bpmn <flow>` | `agents/itba/skills/bpmn.md` | BPMN Flow |
+| `/usecase <feature>` | `agents/itba/skills/usecase.md` | Use Case List |
 
 ### Ví dụ end-to-end
 
 ```
 # BA full flow — từ request đến docs
 /ba "màn hình checkout FPTPlay"
-→ paste: agents/itba/skills/phase-0-research-plan.md
-→ AI output: Research Report + Execution Plan
-→ Review → approve → tiếp Phase 1
+→ Researcher output: Research-Report
+→ paste: agents/itba/skills/research-intake-execution.md
+→ AI output: Research-Intake-Execution
+→ Review/clarify → tiếp BA Document
 
-/wireframe "checkout flow"
-→ paste: agents/itba/skills/phase-2-design.md
-→ chọn Module B (Lo-fi)
-→ AI output: Wireframe description
+/wireframe-text "checkout flow"
+→ paste: agents/itba/skills/wireframe-text.md
+→ AI output: Text-only wireframe for BA Document
 
-/srs "checkout"
-→ paste: agents/itba/skills/phase-3-document.md
-→ AI output: SRS document đầy đủ
+/acceptance-criteria "checkout"
+→ paste: agents/itba/skills/acceptance-criteria.md
+→ AI output: Acceptance Criteria đầy đủ
 
 # Chỉ cần một phần
 /screen [paste screenshot description]

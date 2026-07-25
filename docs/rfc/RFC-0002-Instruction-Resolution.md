@@ -38,7 +38,7 @@ Selected skills are de-duplicated and limited by `max_skills`.
 resolution:
   max_skills: 3
   fallback_skills:
-    - audit
+    - heuristic-audit
   default_template: BA-Document
   rules:
     - id: ui-review
@@ -48,8 +48,8 @@ resolution:
         - mockup
         - giao diện
       skills:
-        - ui-to-spec
-        - audit
+        - screen
+        - heuristic-audit
       template: Audit-Report
 ```
 

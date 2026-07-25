@@ -3,7 +3,7 @@ from pulse.workflow import load_workflow_manifest, validate_workflow_package
 from tests.unit.test_workflow_manifest import make_workflow
 
 def make_agents(root: Path) -> None:
-    for name, skill, template in [("researcher", "synthesize", "Research-Report"), ("itba", "audit", "BA-Document")]:
+    for name, skill, template in [("researcher", "synthesize", "Research-Report"), ("itba", "heuristic-audit", "BA-Document")]:
         agent = root / "agents" / name
         (agent / "skills").mkdir(parents=True)
         (agent / "templates").mkdir()

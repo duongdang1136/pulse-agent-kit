@@ -19,15 +19,25 @@ Do not produce the BA document during this stage.
 
 Pass the Research Report, user requirements, project and feature identifiers, source references, assumptions, conflicts, and unresolved questions. Recommendations are not approved requirements.
 
+## Stage 2 — Research Intake & Execution
+
+Agent: `itba`
+
+Read the ITBA agent, `research-intake-execution` skill, Research Report, user requirements, source references, and Research Intake & Execution template.
+
+Produce a `Research-Intake-Execution` document. This document is mandatory before the BA Document. It converts the Research Report into task brief, evidence summary, business rules, ambiguity log, scope, execution plan, and clarification questions.
+
+Do not recreate the Research Report during this stage. Ask the user when a missing item requires a business decision.
+
 ## Clarification checkpoint
 
 Ask the user when a missing item requires a business decision. Group related questions and avoid asking anything answerable from project sources.
 
-## Stage 2 — Analysis
+## Stage 3 — Analysis
 
 Agent: `itba`
 
-Read the ITBA agent, stage skills, Research Report, user clarifications, relevant project sources, and BA Document template.
+Read the ITBA agent, stage skills, Research Report, Research Intake & Execution document, user clarifications, relevant project sources, and BA Document template.
 
 Produce a `BA-Document` covering scope, objectives, actors, stakeholders, functional requirements, business rules, data/events, integrations, acceptance criteria, assumptions, and open questions.
 

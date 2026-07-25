@@ -23,7 +23,7 @@ stages:
     handoff_to: analysis
   - id: analysis
     agent: itba
-    skills: [audit]
+    skills: [heuristic-audit]
     consumes: [research.output]
     output: BA-Document
 interaction:

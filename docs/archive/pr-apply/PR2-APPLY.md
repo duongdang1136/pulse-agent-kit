@@ -13,7 +13,7 @@ git diff --stat
 
 Expected behavior:
 
-- A UI task resolves `ui-to-spec` and `audit`.
-- An audit task resolves only `audit`.
+- A UI task resolves `screen` and `heuristic-audit`.
+- An audit task resolves only `heuristic-audit`.
 - A task with no matching rule uses fallback skills.
 - No LLM, provider, model, API key, or authentication is involved.

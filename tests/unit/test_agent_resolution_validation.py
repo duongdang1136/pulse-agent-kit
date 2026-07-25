@@ -14,7 +14,7 @@ def test_rule_cannot_reference_undeclared_skill(tmp_path):
     package = make_package(tmp_path)
     manifest_path = package / "manifest.yaml"
     text = manifest_path.read_text(encoding="utf-8")
-    text = text.replace("skills: [ui-to-spec, audit]", "skills: [missing]")
+    text = text.replace("skills: [screen, heuristic-audit]", "skills: [missing]")
     manifest_path.write_text(text, encoding="utf-8")
 
     issues = validate_agent_package(load_agent_manifest(package))
