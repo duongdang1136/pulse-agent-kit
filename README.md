@@ -129,7 +129,7 @@ Hãy đọc repository pulse-agent-kit này.
 Không tự bịa requirement hoặc business rule.
 ```
 
-### 3. Giao task
+### 3. Giao task trong cùng session chat
 
 ```text
 Sử dụng workflow feature-documentation.
@@ -144,12 +144,12 @@ Yêu cầu:
 - tracking;
 - audit log.
 
-Thực hiện Researcher stage trước.
-Sau đó dùng Research Report làm input cho ITBA.
+Hãy chạy đúng workflow đã khai báo trong repository.
+Không tự bịa requirement hoặc business rule.
 Hỏi tôi khi cần business decision không thể suy ra từ tài liệu.
 ```
 
-AI phải thực hiện theo trình tự:
+AI sẽ đọc workflow và thực hiện theo trình tự đã khai báo:
 
 ```text
 PULSE.md
