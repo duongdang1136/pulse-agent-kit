@@ -120,7 +120,7 @@ sự tin môi trường đó và muốn nó chỉnh repository. Cách dùng bìn
 GitHub URL như read-only context, hoặc làm việc trong local clone để bạn kiểm
 soát thay đổi nào được commit và push.
 
-### 2. Yêu cầu AI đọc protocol
+### 2. Mở session chat AI và yêu cầu AI đọc protocol
 
 ```text
 Hãy đọc repository pulse-agent-kit này.
