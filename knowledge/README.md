@@ -1,180 +1,154 @@
-# Knowledge Manager — RAG System 🧠
+# Knowledge and RAG
 
-Hệ thống quản lý knowledge base dạng file Markdown + JSON index. Platform-agnostic, không cần DB, không cần backend.
+Pulse separates source documents, normalized knowledge, and RAG indexes.
 
----
+```text
+projects/
+  fptplay/
+    source-docs/          original project documents
 
-## Cấu trúc
-
-```
 knowledge/
-├── shared/                     ← Wiki chung — Researcher Agent dùng
-│   ├── .rag/
-│   │   └── index.json          ← Search index (auto-generated)
-│   └── pages/                  ← Files .md knowledge
-│       ├── <topic-slug>.md
-│       └── ...
-│
-└── projects/                   ← Per-project — ITBA Agent dùng
-    └── <project-name>/         ← VD: fptplay/
-        ├── .rag/
-        │   └── index.json
-        └── pages/
-            └── <doc-name>.md
+  shared/
+    pages/                reusable cross-project knowledge
+    .rag/                 shared knowledge index
+  projects/
+    fptplay/
+      pages/              normalized project knowledge
+      .rag/               project knowledge index
 ```
 
----
+## Definitions
 
-## Format file knowledge (pages/*.md)
+**Project sources** are original project files in `projects/<project>/source-docs/`.
 
-Mỗi file knowledge có header metadata:
+Examples:
+
+- product briefs
+- stakeholder notes
+- exported docs
+- screenshots or screen descriptions
+- API notes
+- existing specs
+
+Project sources are the highest-priority project evidence after current user instructions.
+
+**Knowledge** is reviewed and normalized Markdown in `knowledge/shared/pages/` or `knowledge/projects/<project>/pages/`.
+
+- Shared knowledge is reusable across projects.
+- Project knowledge belongs to one project. It may still be reusable inside that project or product line.
+- Knowledge pages should keep original source traceability.
+- Do not put unreviewed assumptions into knowledge.
+
+Promote knowledge to `knowledge/shared/pages/` only when it is generic enough for cross-project reuse.
+If the knowledge is reusable but still depends on one product's behavior, vocabulary, source documents, or stakeholder decisions, keep it under `knowledge/projects/<project>/pages/`.
+
+**RAG** is a generated retrieval index under `.rag/`.
+
+- RAG helps find relevant knowledge pages.
+- RAG does not replace source traceability.
+- RAG hits must point back to knowledge pages and original sources.
+
+## Source Priority
+
+Use this order when sources conflict:
+
+1. Current user instruction.
+2. `projects/<project>/source-docs/`.
+3. `knowledge/projects/<project>/pages/`.
+4. Prior workflow outputs.
+5. `knowledge/shared/pages/`.
+6. External research.
+
+## Knowledge Page Format
+
+Each knowledge page should use frontmatter:
 
 ```markdown
 ---
-title: "Tên topic / document"
-tags: [tag1, tag2, tag3]
-keywords: [keyword1, keyword2]  ← dùng để search
-category: TechStack | Domain | Architecture | Product | Process
+title: "Topic or document title"
+tags: [tag1, tag2]
+keywords: [keyword1, keyword2]
+category: TechStack | Domain | Architecture | Product | Process | Security | Other
 last_updated: YYYY-MM-DD
-source: [URL hoặc "internal"]
+source: [path or URL]
 confidence: high | medium | low
 ---
 
-# [Tên topic]
+# Topic
 
-[Nội dung knowledge...]
+Normalized knowledge content.
 ```
 
----
+## Upsert Flow
 
-## Format index.json
+Use this flow when adding or refreshing project knowledge:
 
-```json
-{
-  "version": "1.0",
-  "updated_at": "YYYY-MM-DD",
-  "items": [
-    {
-      "id": "unique-slug",
-      "title": "Tên topic",
-      "path": "pages/topic-slug.md",
-      "tags": ["tag1", "tag2"],
-      "keywords": ["keyword1", "keyword2"],
-      "category": "TechStack",
-      "last_updated": "YYYY-MM-DD",
-      "ttl_days": 90,
-      "summary": "1-2 câu tóm tắt nội dung — dùng để quick match"
-    }
-  ]
-}
+```text
+1. Store original files in projects/<project>/source-docs/.
+2. Review the source or workflow output.
+3. Normalize approved content into knowledge/projects/<project>/pages/.
+4. Preserve links back to original sources.
+5. Rebuild the project RAG index.
+6. Query RAG to verify retrieval works.
 ```
 
-**TTL theo category:**
-| Category | TTL |
-|---|---|
-| Security | 30 ngày |
-| TechStack / Framework | 90 ngày |
-| Architecture | 180 ngày |
-| Domain / Product | 365 ngày |
-| Process | Không hết hạn |
-
----
-
-## Ingest — Thêm knowledge mới
-
-### Manual (recommended cho LLM-driven workflow)
-
-**Bước 1:** Tạo file `.md` trong `pages/`:
+CLI example:
 
 ```bash
-# Shared knowledge
-touch knowledge/shared/pages/<topic-slug>.md
-
-# Project-specific
-touch knowledge/projects/<project>/pages/<doc-slug>.md
+pulse knowledge import fptplay projects/fptplay/source-docs --category Product --overwrite
+pulse rag build fptplay
+pulse rag query fptplay "notification scheduling" --include-shared
 ```
 
-**Bước 2:** Điền header metadata + nội dung theo format trên.
+Use `--no-copy` only when the original files are already in `projects/<project>/source-docs/` and should not be copied again.
 
-**Bước 3:** Cập nhật `index.json` — thêm item mới vào array `items`:
+`--category` defaults to `Product`. Use a more specific category when the imported knowledge matches it:
 
-```json
-{
-  "id": "<unique-slug>",
-  "title": "<title từ frontmatter>",
-  "path": "pages/<file>.md",
-  "tags": [...],
-  "keywords": [...],
-  "category": "...",
-  "last_updated": "YYYY-MM-DD",
-  "ttl_days": 90,
-  "summary": "..."
-}
+```text
+TechStack     framework, library, platform, tooling
+Domain        reusable business/domain concept
+Architecture  system design, integration, API architecture
+Product       product-specific behavior, requirements, specs
+Process       workflow, operating procedure, delivery process
+Security      security, privacy, compliance, risk control
+Other         reviewed knowledge that does not fit the categories above
 ```
 
-### Batch ingest (khi có nhiều files)
+## Shared Knowledge Flow
+
+Use shared knowledge only for reusable material:
+
+```text
+knowledge/shared/pages/
+```
+
+Good shared knowledge:
+
+- technology explanation
+- architecture pattern
+- reusable domain concept
+- general compliance note
+- cross-project research summary
+
+Do not place project-specific confidential behavior into shared knowledge.
+
+Shared knowledge should be queried with project knowledge when broader reusable context is useful:
 
 ```bash
-# Copy files vào pages/
-cp ./your-docs/*.md knowledge/projects/<project>/pages/
-
-# Chạy ingest helper (xem scripts/ingest.sh)
-bash scripts/ingest.sh knowledge/projects/<project>/
+pulse rag query fptplay "notification scheduling" --include-shared
 ```
 
-Script tự scan `pages/*.md`, đọc frontmatter, và rebuild `index.json`.
+Project hits outrank shared hits by source priority when facts conflict. Shared hits are context, not authority over project sources.
 
----
+## RAG Index Files
 
-## Query — Tìm knowledge
+RAG files live under:
 
-**Cách LLM query:**
-
-1. Đọc `knowledge/shared/.rag/index.json` (hoặc project index)
-2. Search keyword trong `title`, `tags`, `keywords`, `summary`
-3. Nếu HIT (confidence ≥ 0.75): đọc file `.md` tương ứng
-4. Nếu MISS: trigger research pipeline
-
-*(Xem chi tiết: `agents/researcher/skills/rag-query.md` và `agents/researcher/skills/research-routing.md`)*
-
----
-
-## Thêm project mới
-
-```bash
-# Tạo project structure
-mkdir -p knowledge/projects/<project-name>/{.rag,pages}
-
-# Tạo index.json trống
-echo '{
-  "version": "1.0",
-  "updated_at": "'$(date +%Y-%m-%d)'",
-  "items": []
-}' > knowledge/projects/<project-name>/.rag/index.json
+```text
+knowledge/projects/<project>/.rag/
+knowledge/shared/.rag/
 ```
 
----
+The index is generated. Do not treat it as authored documentation.
 
-## Ví dụ — Project FPTPlay
-
-```bash
-# Tạo project
-mkdir -p knowledge/projects/fptplay/{.rag,pages}
-
-# Thêm docs vào pages/
-cp ./fptplay-docs/auth-spec.md knowledge/projects/fptplay/pages/
-cp ./fptplay-docs/api-overview.md knowledge/projects/fptplay/pages/
-
-# Cập nhật index.json
-# (manual hoặc dùng scripts/ingest.sh)
-```
-
-ITBA Agent sau đó có thể query: `knowledge/projects/fptplay/.rag/index.json`
-
----
-
-## Scripts
-
-Xem `scripts/` folder:
-- `scripts/ingest.sh` — rebuild index.json từ pages/*.md
-- `scripts/new-project.sh` — init project structure
+If knowledge pages change, rebuild the relevant RAG index.

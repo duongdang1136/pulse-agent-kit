@@ -15,11 +15,18 @@ stages:
     skills: [research-plan, rag-query, research-routing, research-web, research-docs, research-github, research-community, research-market-map, research-product-signal, research-funding-signal, evidence-evaluation, synthesize]
     consumes: [project, feature, user_requirements, project_sources, project_knowledge]
     output: Research-Report
+    handoff_to: knowledge_upsert
+  - id: knowledge_upsert
+    agent: researcher
+    skills: [knowledge-ingest]
+    consumes: [project, research.output, project_sources, project_knowledge]
+    output: Knowledge-Ingest-Note
+    optional: true
     handoff_to: research_intake
   - id: research_intake
     agent: itba
     skills: [research-intake-execution]
-    consumes: [project, feature, user_requirements, research.output, user_clarifications, project_sources, project_knowledge]
+    consumes: [project, feature, user_requirements, research.output, knowledge_upsert.output, user_clarifications, project_sources, project_knowledge]
     output: Research-Intake-Execution
     handoff_to: analysis
   - id: analysis

@@ -1,17 +1,25 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import re
 import shutil
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 
 from pulse.project import ProjectInfo, read_project, slugify
 
 SUPPORTED_EXTENSIONS = {".md", ".markdown", ".txt", ".pdf", ".docx", ".xlsx"}
+KNOWLEDGE_CATEGORIES = {
+    "TechStack",
+    "Domain",
+    "Architecture",
+    "Product",
+    "Process",
+    "Security",
+    "Other",
+}
 
 
 @dataclass(frozen=True)
@@ -21,6 +29,14 @@ class ImportResult:
     page_path: Path
     document_id: str
     status: str
+    checksum: str
+
+
+@dataclass(frozen=True)
+class ExistingDocuments:
+    by_id: dict[str, dict[str, Any]]
+    by_source_file: dict[str, dict[str, Any]]
+    by_source_path: dict[str, dict[str, Any]]
 
 
 def import_knowledge(
@@ -30,7 +46,13 @@ def import_knowledge(
     *,
     copy_source: bool = True,
     overwrite: bool = False,
+    category: str = "Product",
 ) -> list[ImportResult]:
+    if category not in KNOWLEDGE_CATEGORIES:
+        raise ValueError(
+            "Unsupported knowledge category. Choose one of: "
+            + ", ".join(sorted(KNOWLEDGE_CATEGORIES))
+        )
     project = read_project(root, project_identifier)
     source = source.expanduser().resolve()
     if not source.exists():
@@ -42,12 +64,23 @@ def import_knowledge(
 
     results: list[ImportResult] = []
     used_ids: set[str] = set()
+    existing_documents = _load_existing_documents(root, project)
     for file_path in files:
         relative = file_path.name if source.is_file() else file_path.relative_to(source).as_posix()
-        document_id = _unique_document_id(relative, used_ids)
+        document_id = _document_id_for_source(file_path, relative, existing_documents, used_ids)
         used_ids.add(document_id)
         results.append(
-            _import_file(root, project, file_path, relative, document_id, copy_source, overwrite)
+            _import_file(
+                root,
+                project,
+                file_path,
+                relative,
+                document_id,
+                existing_documents.by_id.get(document_id),
+                copy_source,
+                overwrite,
+                category,
+            )
         )
     _write_manifest(root, project, results)
     return results
@@ -77,13 +110,18 @@ def _import_file(
     source: Path,
     relative: str,
     document_id: str,
+    existing: dict[str, Any] | None,
     copy_source: bool,
     overwrite: bool,
+    category: str,
 ) -> ImportResult:
     workspace_source = root / project.workspace_path / "source-docs" / relative
     page = root / project.knowledge_path / "pages" / f"{document_id}.md"
+    checksum = hashlib.sha256(source.read_bytes()).hexdigest()
+    if page.exists() and existing and existing.get("checksum") == checksum:
+        return ImportResult(source, workspace_source, page, document_id, "skipped", checksum)
     if page.exists() and not overwrite:
-        return ImportResult(source, workspace_source, page, document_id, "skipped")
+        return ImportResult(source, workspace_source, page, document_id, "skipped", checksum)
 
     text = extract_text(source)
     if not text.strip():
@@ -95,10 +133,11 @@ def _import_file(
             shutil.copy2(source, workspace_source)
 
     page.parent.mkdir(parents=True, exist_ok=True)
+    status = "updated" if page.exists() or existing else "created"
     page.write_text(
-        _render_page(project, source, relative, document_id, text), encoding="utf-8"
+        _render_page(project, source, relative, document_id, text, category), encoding="utf-8"
     )
-    return ImportResult(source, workspace_source, page, document_id, "imported")
+    return ImportResult(source, workspace_source, page, document_id, status, checksum)
 
 
 def extract_text(path: Path) -> str:
@@ -180,7 +219,12 @@ def _escape_cell(value: str) -> str:
 
 
 def _render_page(
-    project: ProjectInfo, source: Path, relative: str, document_id: str, text: str
+    project: ProjectInfo,
+    source: Path,
+    relative: str,
+    document_id: str,
+    text: str,
+    category: str,
 ) -> str:
     title = source.stem.replace("-", " ").replace("_", " ").strip().title()
     checksum = hashlib.sha256(source.read_bytes()).hexdigest()
@@ -190,7 +234,7 @@ def _render_page(
         f'id: "{document_id}"\n'
         f'title: "{_yaml_escape(title)}"\n'
         'type: "knowledge"\n'
-        'category: "Product"\n'
+        f'category: "{_yaml_escape(category)}"\n'
         f'project: "{_yaml_escape(project.slug)}"\n'
         f'source_file: "{_yaml_escape(relative)}"\n'
         f'source_type: "{source.suffix.lower().lstrip(".")}"\n'
@@ -226,6 +270,61 @@ def _unique_document_id(relative: str, used_ids: set[str]) -> str:
     return candidate
 
 
+def _load_existing_documents(root: Path, project: ProjectInfo) -> ExistingDocuments:
+    from pulse.rag.manifest import load_manifest
+
+    manifest_path = root / project.knowledge_path / "manifest.json"
+    payload = load_manifest(manifest_path, project.slug)
+    by_id: dict[str, dict[str, Any]] = {}
+    by_source_file: dict[str, dict[str, Any]] = {}
+    by_source_path: dict[str, dict[str, Any]] = {}
+    for item in payload["documents"]:
+        doc_id = item.get("id") or item.get("document_id")
+        if not doc_id:
+            continue
+        by_id[doc_id] = item
+        source_file = item.get("source_file") or _source_file_from_page(root, project, item)
+        if source_file:
+            by_source_file[source_file] = item
+        source_path = item.get("source")
+        if source_path:
+            by_source_path[str(Path(source_path))] = item
+    return ExistingDocuments(by_id, by_source_file, by_source_path)
+
+
+def _source_file_from_page(root: Path, project: ProjectInfo, document: dict[str, Any]) -> str:
+    page_value = document.get("page", "")
+    if not page_value:
+        return ""
+    page = root / project.knowledge_path / page_value
+    if not page.exists():
+        page = root / project.knowledge_path / "pages" / Path(page_value).name
+    if not page.exists():
+        return ""
+    match = re.search(
+        r'(?m)^source_file:\s*(?:"(?P<double>(?:\\"|[^"])*)"|\'(?P<single>[^\']*)\'|(?P<bare>.+))\s*$',
+        page.read_text(encoding="utf-8-sig", errors="replace"),
+    )
+    if not match:
+        return ""
+    value = match.group("double") or match.group("single") or match.group("bare") or ""
+    return value.replace('\\"', '"').strip()
+
+
+def _document_id_for_source(
+    source: Path,
+    relative: str,
+    existing_documents: ExistingDocuments,
+    used_ids: set[str],
+) -> str:
+    existing = existing_documents.by_source_file.get(relative) or existing_documents.by_source_path.get(str(source))
+    if existing:
+        existing_id = existing.get("id") or existing.get("document_id")
+        if existing_id and existing_id not in used_ids:
+            return existing_id
+    return _unique_document_id(relative, used_ids)
+
+
 def _write_manifest(root: Path, project: ProjectInfo, results: list[ImportResult]) -> None:
     from pulse.rag.manifest import load_manifest, save_manifest
 
@@ -234,28 +333,42 @@ def _write_manifest(root: Path, project: ProjectInfo, results: list[ImportResult
     existing = {item.get("id"): item for item in payload["documents"] if item.get("id")}
     today = date.today().isoformat()
     for result in results:
-        checksum = hashlib.sha256(result.source.read_bytes()).hexdigest()
         current = existing.get(result.document_id, {})
+        if result.status == "skipped":
+            if current:
+                existing[result.document_id] = current
+            continue
         current.update({
             "id": result.document_id,
             "title": result.source.stem.replace("-", " ").replace("_", " ").strip().title(),
             "project": project.slug,
             "source": str(result.source),
             "page": result.page_path.relative_to(root / project.knowledge_path).as_posix(),
-            "checksum": checksum,
+            "checksum": result.checksum,
+            "source_file": _source_file_for_page(root, project, result.page_path),
             "source_type": result.source.suffix.lower().lstrip("."),
-            "status": "imported" if result.status == "imported" else current.get("status", "imported"),
+            "status": "imported",
             "created_at": current.get("created_at", today),
             "updated_at": today,
             "metadata": {"copied_to": result.copied_to.as_posix()},
         })
-        if result.status == "imported":
-            current["index_fingerprint"] = ""
+        current["index_fingerprint"] = ""
         existing[result.document_id] = current
     payload["schema_version"] = 2
     payload["project"] = project.slug
     payload["documents"] = sorted(existing.values(), key=lambda item: item["id"])
     save_manifest(manifest_path, payload)
+
+
+def _source_file_for_page(root: Path, project: ProjectInfo, page_path: Path) -> str:
+    try:
+        return _source_file_from_page(
+            root,
+            project,
+            {"page": page_path.relative_to(root / project.knowledge_path).as_posix()},
+        )
+    except ValueError:
+        return ""
 
 
 def list_knowledge(root: Path, project_identifier: str) -> list[Path]:

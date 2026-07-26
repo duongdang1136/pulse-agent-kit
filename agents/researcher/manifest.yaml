@@ -49,6 +49,7 @@ templates:
   - Tech-Trend-Scorecard
   - Tech-Source-Registry
   - Tech-Trend-Summary
+  - Knowledge-Ingest-Note
 knowledge:
   shared: true
   project: true

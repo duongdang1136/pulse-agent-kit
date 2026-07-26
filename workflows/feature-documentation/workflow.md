@@ -5,7 +5,7 @@ version: 1.0.0
 
 # Feature Documentation Workflow
 
-## Stage 1 — Research
+## Stage 1 - Research
 
 Agent: `researcher`
 
@@ -15,11 +15,32 @@ Produce a `Research-Report` containing source inventory, evidence-backed finding
 
 Do not produce the BA document during this stage.
 
-## Handoff — Researcher to ITBA
+## Optional Checkpoint - Knowledge Upsert
 
-Pass the Research Report, user requirements, project and feature identifiers, source references, assumptions, conflicts, and unresolved questions. Recommendations are not approved requirements.
+Agent: `researcher`
 
-## Stage 2 — Research Intake & Execution
+Run this checkpoint only after the Research Report is reviewed and the user approves reusable knowledge capture.
+
+Use `knowledge-ingest` to propose or perform an upsert into:
+
+```text
+knowledge/shared/pages/
+knowledge/projects/<project>/pages/
+```
+
+Then rebuild the relevant RAG index if CLI tooling is being used:
+
+```text
+pulse rag build <project>
+```
+
+Do not upsert unreviewed research, unresolved assumptions, or project-specific information into shared knowledge. This checkpoint is optional and must not block ITBA handoff unless the user explicitly asks to refresh knowledge first.
+
+## Handoff - Researcher to ITBA
+
+Pass the Research Report, optional Knowledge Ingest Note, user requirements, project and feature identifiers, source references, assumptions, conflicts, and unresolved questions. Recommendations are not approved requirements.
+
+## Stage 2 - Research Intake & Execution
 
 Agent: `itba`
 
@@ -29,11 +50,11 @@ Produce a `Research-Intake-Execution` document. This document is mandatory befor
 
 Do not recreate the Research Report during this stage. Ask the user when a missing item requires a business decision.
 
-## Clarification checkpoint
+## Clarification Checkpoint
 
 Ask the user when a missing item requires a business decision. Group related questions and avoid asking anything answerable from project sources.
 
-## Stage 3 — Analysis
+## Stage 3 - Analysis
 
 Agent: `itba`
 

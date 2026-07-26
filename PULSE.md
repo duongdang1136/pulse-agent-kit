@@ -2,7 +2,7 @@
 
 Pulse is an AI-readable repository, not an LLM runtime. It requires no provider, API key, or authentication.
 
-## Mandatory read order
+## Mandatory Read Order
 
 1. Read this file first.
 2. Identify the requested project and workflow.
@@ -13,7 +13,7 @@ Pulse is an AI-readable repository, not an LLM runtime. It requires no provider,
 7. Ask the user when a business decision cannot be derived from evidence.
 8. Produce the declared output template.
 
-## Source priority
+## Source Priority
 
 1. Current user instructions.
 2. Project source documents.
@@ -24,11 +24,11 @@ Pulse is an AI-readable repository, not an LLM runtime. It requires no provider,
 
 Never silently resolve conflicting sources.
 
-## Non-invention rule
+## Non-Invention Rule
 
 Do not invent requirements, business rules, acceptance criteria, system behavior, stakeholder decisions, metrics, API contracts, or data definitions. Label proposals as proposals and assumptions as assumptions.
 
-## Workflow execution
+## Workflow Execution
 
 For each stage:
 
@@ -40,17 +40,56 @@ For each stage:
 6. Produce the declared output.
 7. Pass it to the next stage.
 
-## Project usage
+## Project Usage
 
-Projects live under `projects/<project>/`; normalized knowledge lives under `knowledge/projects/<project>/`. RAG is a navigation aid and does not replace source traceability.
+Pulse separates original project sources, normalized knowledge, and RAG indexes:
 
-## Default feature-documentation flow
+```text
+projects/
+  <project>/
+    source-docs/          original documents supplied by the user/project
+
+knowledge/
+  shared/                 reusable cross-project knowledge
+  projects/
+    <project>/            normalized project knowledge pages and RAG index
+```
+
+Source priority:
+
+1. `projects/<project>/source-docs/` is the source of truth for project-specific facts.
+2. `knowledge/projects/<project>/pages/` is normalized project knowledge derived from reviewed sources or outputs.
+3. `knowledge/shared/pages/` is reusable cross-project knowledge.
+4. `.rag/` indexes are navigation aids over knowledge pages.
+
+RAG helps find relevant knowledge quickly, but it never replaces source traceability. When RAG returns a hit, cite the underlying knowledge page and its original source, not the index itself.
+
+## Knowledge Upsert
+
+Knowledge upsert is optional and approval-gated.
+
+Use it when reviewed research or approved source material should become reusable knowledge:
+
+```text
+projects/<project>/source-docs/       original evidence
+  -> review / normalize
+knowledge/projects/<project>/pages/   reusable project knowledge
+  -> rebuild RAG
+knowledge/projects/<project>/.rag/    generated retrieval index
+```
+
+Do not upsert unreviewed research, unresolved assumptions, or project-specific material into shared knowledge.
+
+## Default Feature Documentation Flow
 
 ```text
 Researcher
-  ↓ Research-Report
+  -> Research-Report
+Optional Knowledge Upsert
+  -> Knowledge-Ingest-Note
 ITBA
-  ↓ BA-Document
+  -> Research-Intake-Execution
+  -> BA-Document
 ```
 
-Researcher gathers and separates evidence, conflicts, gaps, assumptions, and recommendations. ITBA consumes that report plus user requirements and project sources, asks for unresolved business decisions, then produces the BA document.
+Researcher gathers and separates evidence, conflicts, gaps, assumptions, and recommendations. The optional knowledge upsert checkpoint captures reviewed reusable knowledge. ITBA consumes the Research Report, optional Knowledge Ingest Note, user requirements, and project sources, asks for unresolved business decisions, then produces the BA document.

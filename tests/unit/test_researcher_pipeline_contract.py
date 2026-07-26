@@ -151,3 +151,16 @@ def test_feature_documentation_research_stage_uses_expanded_source_channels():
     }
 
     assert required_skills.issubset(set(research_stage["skills"]))
+
+
+def test_feature_documentation_has_optional_knowledge_upsert_checkpoint():
+    workflow = load_yaml("workflows/feature-documentation/manifest.yaml")
+    stages = {stage["id"]: stage for stage in workflow["stages"]}
+
+    assert stages["research"]["handoff_to"] == "knowledge_upsert"
+    assert stages["knowledge_upsert"]["agent"] == "researcher"
+    assert stages["knowledge_upsert"]["skills"] == ["knowledge-ingest"]
+    assert stages["knowledge_upsert"]["output"] == "Knowledge-Ingest-Note"
+    assert stages["knowledge_upsert"]["optional"] is True
+    assert stages["knowledge_upsert"]["handoff_to"] == "research_intake"
+    assert "knowledge_upsert.output" in stages["research_intake"]["consumes"]

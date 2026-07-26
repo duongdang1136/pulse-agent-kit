@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
 
 from pulse import __version__
-from pulse.knowledge import import_knowledge, list_knowledge
+from pulse.knowledge import KNOWLEDGE_CATEGORIES, import_knowledge, list_knowledge
 from pulse.rag import build_index, query_index
 from pulse.project import (
     create_project,
@@ -39,6 +40,12 @@ def build_parser() -> argparse.ArgumentParser:
     knowledge_import.add_argument("source", type=Path, help="File or folder to import")
     knowledge_import.add_argument("--no-copy", action="store_true", help="Do not copy original files into source-docs")
     knowledge_import.add_argument("--overwrite", action="store_true", help="Overwrite existing normalized pages")
+    knowledge_import.add_argument(
+        "--category",
+        default="Product",
+        choices=sorted(KNOWLEDGE_CATEGORIES),
+        help="Knowledge category for imported pages",
+    )
     knowledge_list = knowledge_sub.add_parser("list", help="List normalized project knowledge pages")
     knowledge_list.add_argument("project", help="Project slug or name")
 
@@ -54,6 +61,11 @@ def build_parser() -> argparse.ArgumentParser:
     rag_query.add_argument("project")
     rag_query.add_argument("query")
     rag_query.add_argument("--top-k", type=int, default=5)
+    rag_query.add_argument(
+        "--include-shared",
+        action="store_true",
+        help="Query project knowledge and shared knowledge, then merge ranked hits",
+    )
 
     sub.add_parser("doctor", help="Check repository and project workspace health")
     sub.add_parser("validate", help="Run the repository validator")
@@ -114,12 +126,14 @@ def _handle_knowledge(root: Path, args: argparse.Namespace) -> int:
             args.source,
             copy_source=not args.no_copy,
             overwrite=args.overwrite,
+            category=args.category,
         )
-        imported = sum(result.status == "imported" for result in results)
-        skipped = len(results) - imported
+        created = sum(result.status == "created" for result in results)
+        updated = sum(result.status == "updated" for result in results)
+        skipped = sum(result.status == "skipped" for result in results)
         for result in results:
             print(f"{result.status.upper()}: {result.source.name} -> {result.page_path.relative_to(root)}")
-        print(f"Imported: {imported}; skipped: {skipped}")
+        print(f"Created: {created}; updated: {updated}; skipped: {skipped}")
         print(f"Next: pulse rag build {read_project(root, args.project).slug}")
         return 0
     pages = list_knowledge(root, args.project)
@@ -146,17 +160,37 @@ def _handle_rag(root: Path, args: argparse.Namespace) -> int:
         print(f"Indexed: {report.indexed}; skipped: {report.skipped}; removed: {report.removed}")
         print(f"Chunks: {report.chunks}; embedding: {report.provider}/{report.model}")
         return 0
-    results = query_index(target, args.query, top_k=args.top_k)
+    scoped_results = [("project", result) for result in query_index(target, args.query, top_k=args.top_k)]
+    if args.include_shared:
+        shared = root / "knowledge" / "shared"
+        if _has_queryable_rag(shared):
+            scoped_results.extend(
+                ("shared", result) for result in query_index(shared, args.query, top_k=args.top_k)
+            )
+    scoped_results.sort(key=lambda item: item[1].score, reverse=True)
+    scoped_results = scoped_results[: args.top_k]
+    results = [result for _, result in scoped_results]
     if not results:
         print("No relevant chunks found.")
         return 0
-    for index, result in enumerate(results, start=1):
+    for index, (scope, result) in enumerate(scoped_results, start=1):
         heading = f" | {result.heading}" if result.heading else ""
-        print(f"[{index}] score={result.score:.4f} | {result.document_id}{heading}")
+        print(f"[{index}] score={result.score:.4f} | scope={scope} | {result.document_id}{heading}")
         print(f"Source: {result.source}")
         print(result.text.strip())
         print()
     return 0
+
+
+def _has_queryable_rag(knowledge_root: Path) -> bool:
+    index = knowledge_root / ".rag" / "index.json"
+    if not index.exists():
+        return False
+    try:
+        config = json.loads(index.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return False
+    return isinstance(config, dict)
 
 
 def run_doctor(root: Path) -> int:

@@ -193,25 +193,59 @@ Workflow xác định:
 - handoff giữa các agent;
 - điều kiện phải hỏi lại người dùng.
 
-### Project sources
+### Project Sources, Knowledge, and RAG
 
-Tài liệu gốc của dự án nằm tại:
-
-```text
-projects/<project>/source-docs/
-```
-
-AI ưu tiên tài liệu nguồn trước normalized knowledge.
-
-### Knowledge và RAG
-
-Normalized knowledge nằm tại:
+Pulse separates original project inputs from reusable knowledge and search indexes.
 
 ```text
-knowledge/projects/<project>/
+projects/
+  fptplay/
+    source-docs/          original project documents supplied by user/project
+
+knowledge/
+  shared/                 reusable cross-project knowledge
+  projects/
+    fptplay/              normalized project knowledge
+      pages/              Markdown knowledge pages
+      .rag/               generated search index/vector files
 ```
 
-RAG được dùng để tìm vùng nội dung liên quan, không thay thế source traceability.
+**Project sources** live in `projects/<project>/source-docs/`.
+
+- Original files: briefs, specs, screenshots, meeting notes, exported docs, API notes.
+- Source of truth for project-specific facts.
+- Higher priority than normalized knowledge when sources conflict.
+- Should remain traceable; do not overwrite them with AI summaries.
+
+**Knowledge** lives in `knowledge/shared/` and `knowledge/projects/<project>/`.
+
+- `knowledge/shared/pages/` contains reusable cross-project knowledge.
+- `knowledge/projects/<project>/pages/` contains reviewed, normalized project knowledge.
+- Knowledge pages are derived from approved sources or reviewed workflow outputs.
+- Knowledge is optimized for reuse; it is not a replacement for source evidence.
+
+**RAG** lives under each knowledge scope in `.rag/`.
+
+- RAG indexes knowledge pages so AI/CLI can find relevant context quickly.
+- RAG is a navigation aid, not an authority layer.
+- When RAG returns a hit, cite the knowledge page and its original source.
+
+Typical upsert flow:
+
+```text
+1. Put original docs in projects/<project>/source-docs/.
+2. Import/normalize reviewed docs into knowledge/projects/<project>/pages/.
+3. Build or rebuild the RAG index.
+4. Researcher queries RAG, then verifies against sources when needed.
+```
+
+CLI example:
+
+```bash
+pulse knowledge import fptplay projects/fptplay/source-docs --overwrite
+pulse rag build fptplay
+pulse rag query fptplay "notification scheduling"
+```
 
 ## CLI
 
