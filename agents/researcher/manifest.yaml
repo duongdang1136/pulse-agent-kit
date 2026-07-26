@@ -7,13 +7,48 @@ description: >
   internal knowledge, and project sources, then producing a traceable synthesis.
 instructions: agent.md
 skills:
-  - rag-router
+  - rag-query
+  - research-routing
+  - research-plan
   - research-community
+  - research-docs
+  - research-market-map
+  - research-product-signal
+  - research-funding-signal
   - research-github
   - research-web
+  - compare-options
+  - benchmark-analysis
+  - evidence-evaluation
+  - content-brief
+  - social-post
+  - tech-macro-regime
+  - tech-domain-lifecycle
+  - tech-adoption-curve
+  - tech-investment-signal
+  - tech-platform-shift
+  - tech-regulation-risk
+  - tech-market-timing
+  - tech-signal-discovery
+  - tech-trend-confirmation
+  - tech-source-registry
+  - tech-trend-summary
+  - adoption-signal
+  - durability-check
+  - itba-impact-analysis
+  - knowledge-ingest
   - synthesize
 templates:
   - Research-Report
+  - Comparison-Report
+  - Benchmark-Report
+  - Content-Brief
+  - Social-Post
+  - Tech-Macro-Regime-Report
+  - Tech-Trend-Watchlist
+  - Tech-Trend-Scorecard
+  - Tech-Source-Registry
+  - Tech-Trend-Summary
 knowledge:
   shared: true
   project: true
@@ -21,9 +56,10 @@ output:
   format: markdown
   template: Research-Report
 resolution:
-  max_skills: 3
+  max_skills: 8
   fallback_skills:
-    - rag-router
+    - rag-query
+    - research-routing
     - synthesize
   default_template: Research-Report
   rules:
@@ -36,6 +72,8 @@ resolution:
         - source code
         - mã nguồn
       skills:
+        - rag-query
+        - research-routing
         - research-github
         - synthesize
     - id: community-research
@@ -48,6 +86,8 @@ resolution:
         - cộng đồng
         - diễn đàn
       skills:
+        - rag-query
+        - research-routing
         - research-community
         - synthesize
     - id: web-research
@@ -60,7 +100,61 @@ resolution:
         - trang web
         - bài viết
       skills:
+        - rag-query
+        - research-routing
         - research-web
+        - synthesize
+    - id: docs-research
+      priority: 89
+      when_any:
+        - official docs
+        - documentation
+        - changelog
+        - release notes
+        - rfc
+        - roadmap
+      skills:
+        - rag-query
+        - research-docs
+        - evidence-evaluation
+        - synthesize
+    - id: market-map
+      priority: 88
+      when_any:
+        - market map
+        - landscape
+        - vendor landscape
+        - ecosystem map
+        - competitor map
+      skills:
+        - research-market-map
+        - research-product-signal
+        - evidence-evaluation
+        - synthesize
+    - id: product-signal
+      priority: 87
+      when_any:
+        - product signal
+        - product launch
+        - pricing signal
+        - integration signal
+        - customer proof
+      skills:
+        - research-product-signal
+        - evidence-evaluation
+        - synthesize
+    - id: funding-signal
+      priority: 86
+      when_any:
+        - funding signal
+        - acquisition signal
+        - hiring signal
+        - partnership signal
+        - investment signal
+      skills:
+        - research-funding-signal
+        - tech-investment-signal
+        - evidence-evaluation
         - synthesize
     - id: internal-knowledge
       priority: 70
@@ -71,8 +165,146 @@ resolution:
         - tài liệu nội bộ
         - tài liệu dự án
       skills:
-        - rag-router
+        - rag-query
         - synthesize
+    - id: full-research
+      priority: 60
+      when_any:
+        - research
+        - nghiên cứu
+        - tìm hiểu
+      skills:
+        - research-plan
+        - rag-query
+        - research-routing
+        - synthesize
+    - id: comparison
+      priority: 95
+      when_any:
+        - compare
+        - comparison
+        - versus
+        - vs
+        - so sánh
+        - đối chiếu
+      skills:
+        - compare-options
+        - evidence-evaluation
+        - synthesize
+      template: Comparison-Report
+    - id: benchmark
+      priority: 94
+      when_any:
+        - benchmark
+        - benchmarking
+        - performance test
+        - đo lường
+        - hiệu năng
+        - cost analysis
+      skills:
+        - benchmark-analysis
+        - evidence-evaluation
+        - synthesize
+      template: Benchmark-Report
+    - id: content-brief
+      priority: 93
+      when_any:
+        - content brief
+        - brief
+        - content angle
+        - social content
+        - lên ý tưởng bài
+        - dàn ý bài
+      skills:
+        - content-brief
+        - evidence-evaluation
+      template: Content-Brief
+    - id: social-post
+      priority: 92
+      when_any:
+        - social post
+        - linkedin post
+        - twitter thread
+        - x thread
+        - facebook post
+        - thread
+        - carousel
+        - bài post
+        - bài đăng
+      skills:
+        - content-brief
+        - social-post
+      template: Social-Post
+    - id: tech-macro-regime
+      priority: 78
+      when_any:
+        - tech macro
+        - macro regime
+        - technology regime
+        - industry regime
+        - tech phase
+      skills:
+        - tech-macro-regime
+        - tech-domain-lifecycle
+        - tech-adoption-curve
+        - tech-market-timing
+        - evidence-evaluation
+      template: Tech-Macro-Regime-Report
+    - id: tech-signal-discovery
+      priority: 77
+      when_any:
+        - tech signal
+        - signal discovery
+        - tech trend discovery
+        - discover trend
+        - trend watchlist
+      skills:
+        - tech-signal-discovery
+        - research-docs
+        - research-github
+        - research-community
+        - research-market-map
+        - evidence-evaluation
+      template: Tech-Trend-Watchlist
+    - id: tech-trend-confirmation
+      priority: 76
+      when_any:
+        - trend confirm
+        - confirm trend
+        - tech trend confirm
+        - trend scorecard
+        - validate trend
+      skills:
+        - tech-trend-confirmation
+        - adoption-signal
+        - durability-check
+        - itba-impact-analysis
+        - evidence-evaluation
+      template: Tech-Trend-Scorecard
+    - id: tech-source-registry
+      priority: 83
+      when_any:
+        - tech source registry
+        - source registry
+        - high-signal sources
+        - source winrate
+      skills:
+        - tech-source-registry
+        - evidence-evaluation
+      template: Tech-Source-Registry
+    - id: tech-trend-summary
+      priority: 82
+      when_any:
+        - tech trend summary
+        - trend summary
+        - summary trend
+        - tổng hợp trend
+        - tóm tắt trend
+      skills:
+        - tech-trend-summary
+        - itba-impact-analysis
+        - evidence-evaluation
+      template: Tech-Trend-Summary
 tags:
   - research
   - evidence

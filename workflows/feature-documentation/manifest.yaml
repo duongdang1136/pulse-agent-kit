@@ -12,7 +12,7 @@ inputs:
 stages:
   - id: research
     agent: researcher
-    skills: [rag-router, research-github, research-web, synthesize]
+    skills: [research-plan, rag-query, research-routing, research-web, research-docs, research-github, research-community, research-market-map, research-product-signal, research-funding-signal, evidence-evaluation, synthesize]
     consumes: [project, feature, user_requirements, project_sources, project_knowledge]
     output: Research-Report
     handoff_to: research_intake

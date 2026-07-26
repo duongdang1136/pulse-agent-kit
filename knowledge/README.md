@@ -135,7 +135,7 @@ Script tự scan `pages/*.md`, đọc frontmatter, và rebuild `index.json`.
 3. Nếu HIT (confidence ≥ 0.75): đọc file `.md` tương ứng
 4. Nếu MISS: trigger research pipeline
 
-*(Xem chi tiết: `agents/researcher/skills/rag-router.md`)*
+*(Xem chi tiết: `agents/researcher/skills/rag-query.md` và `agents/researcher/skills/research-routing.md`)*
 
 ---
 

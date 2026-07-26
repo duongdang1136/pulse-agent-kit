@@ -1,8 +1,8 @@
 # Skill: Research Web 🌐
 
-**Command:** `/research-web <topic>` hoặc `/research <topic>`  
+**Command:** `/research-web <topic>`  
 **Agent:** Researcher  
-**Output:** Web Research section trong Research-Report.md
+**Output:** Channel Evidence / Web Research section trong Research-Report.md
 
 ---
 
@@ -15,7 +15,7 @@ Research topic từ web — tổng hợp thành knowledge item chuẩn. Dùng kh
 ## Khi nào dùng
 
 - Được gọi bởi RAG Router khi WIKI MISS
-- User gõ: `/research "X"` hoặc `/research-web "X"`
+- User gõ: `/research-web "X"`
 - Topic là concept, pattern, architecture, framework tổng quát
 
 ---
@@ -113,4 +113,4 @@ Output theo format Research-Report.md, section Web Research:
 
 ## Output
 
-Điền vào section **Web Research** của `templates/Research-Report.md`.
+Điền vào section **Channel Evidence / Web Research** của `templates/Research-Report.md`.

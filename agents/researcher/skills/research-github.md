@@ -2,7 +2,7 @@
 
 **Command:** `/research-github <library>`  
 **Agent:** Researcher  
-**Output:** GitHub Research section trong Research-Report.md
+**Output:** Channel Evidence / GitHub Research section trong Research-Report.md
 
 ---
 
@@ -88,4 +88,4 @@ web_search: "{library} deprecated {feature}"
 
 ## Output
 
-Điền vào section **GitHub Research** của `templates/Research-Report.md`.
+Điền vào section **Channel Evidence / GitHub Research** của `templates/Research-Report.md`.

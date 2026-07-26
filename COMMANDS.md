@@ -1,75 +1,86 @@
-# COMMANDS.md — Command and CLI Reference
+# COMMANDS.md - Command and CLI Reference
 
-> `PULSE.md` là entry point chính cho AI.
+> `PULSE.md` is the main AI entry point.
 >
-> Các slash command trong tài liệu này là shorthand hoặc legacy interaction
-> patterns. Người dùng không bắt buộc phải copy từng skill vào AI.
+> Slash commands are shorthand / legacy interaction patterns. Users do not need
+> to manually paste every skill into AI.
 >
-> Với flow multi-agent, hãy ưu tiên workflow package trong `workflows/`.
+> For multi-agent flows, prefer workflow packages in `workflows/`.
 
-## Recommended usage
+## Recommended Usage
 
 ```text
-Đọc PULSE.md.
-Sử dụng workflow feature-documentation.
+Read PULSE.md.
+Use workflow feature-documentation.
 Project: FPTPlay.
-Thực hiện Researcher trước, sau đó ITBA tạo Research Intake & Execution, cuối cùng mới tạo BA Document.
+Run Researcher first, then ITBA creates Research Intake & Execution, then BA Document.
 ```
 
 ---
 
-## 🔍 Researcher Agent
+## Researcher Agent
 
-| Command | Skill cần paste | Template output |
+| Command | Skill needed | Template output |
 |---|---|---|
-| `/research <topic>` | `agents/researcher/skills/research-web.md` + `research-github.md` + `research-community.md` | `Research-Report.md` |
-| `/research-web <topic>` | `agents/researcher/skills/research-web.md` | Section Web Research |
-| `/research-github <library>` | `agents/researcher/skills/research-github.md` | Section GitHub Research |
-| `/research-community <topic>` | `agents/researcher/skills/research-community.md` | Section Community Research |
-| `/rag <query>` | `agents/researcher/skills/rag-router.md` | Relevant knowledge từ index |
-| `/ingest <path>` | `knowledge/README.md` | Cập nhật `.rag/index.json` |
+| `/research <topic>` | `agents/researcher/skills/research-plan.md` + `rag-query.md` + selected source/channel skills + `evidence-evaluation.md` + `synthesize.md` | `Research-Report.md` |
+| `/research-web <topic>` | `agents/researcher/skills/research-web.md` | Web Research section |
+| `/research-docs <topic>` | `agents/researcher/skills/research-docs.md` | Docs Research section |
+| `/research-github <library>` | `agents/researcher/skills/research-github.md` | GitHub Research section |
+| `/research-community <topic>` | `agents/researcher/skills/research-community.md` | Community Research section |
+| `/research-market-map <domain>` | `agents/researcher/skills/research-market-map.md` | Market Map section |
+| `/research-product-signal <domain>` | `agents/researcher/skills/research-product-signal.md` | Product Signal section |
+| `/research-funding-signal <domain>` | `agents/researcher/skills/research-funding-signal.md` | Funding Signal section |
+| `/compare <a> vs <b>` | `agents/researcher/skills/compare-options.md` + `evidence-evaluation.md` | `Comparison-Report.md` |
+| `/benchmark <topic>` | `agents/researcher/skills/benchmark-analysis.md` + `evidence-evaluation.md` | `Benchmark-Report.md` |
+| `/evaluate-evidence <topic>` | `agents/researcher/skills/evidence-evaluation.md` | Evidence Evaluation section |
+| `/content-brief <topic>` | `agents/researcher/skills/content-brief.md` | `Content-Brief.md` |
+| `/social-post <topic>` | `agents/researcher/skills/social-post.md` + `content-brief.md` | `Social-Post.md` |
+| `/tech-macro-regime <domain>` | `tech-macro-regime.md` + macro helper skills as needed | `Tech-Macro-Regime-Report.md` |
+| `/tech-signal-discovery <domain>` | `tech-signal-discovery.md` + selected source/channel skills | `Tech-Trend-Watchlist.md` |
+| `/tech-trend-confirm <trend>` | `tech-trend-confirmation.md` + confirmation helper skills | `Tech-Trend-Scorecard.md` |
+| `/tech-source-registry <domain>` | `agents/researcher/skills/tech-source-registry.md` + `evidence-evaluation.md` | `Tech-Source-Registry.md` |
+| `/tech-trend-summary <domain>` | `agents/researcher/skills/tech-trend-summary.md` + `itba-impact-analysis.md` | `Tech-Trend-Summary.md` |
+| `/rag <query>` | `agents/researcher/skills/rag-query.md` | Relevant knowledge from index |
+| `/research-route <topic>` | `agents/researcher/skills/research-routing.md` | Research route plan |
+| `/ingest <path>` | `agents/researcher/skills/knowledge-ingest.md` + `knowledge/README.md` | Update knowledge after review |
 
-### Ví dụ
+### Tech Trend Pipeline
 
-```
-/research "Next.js App Router vs Pages Router"
-→ paste: agents/researcher/skills/research-web.md
-→ output: Research-Report.md
-
-/research-github "prisma"
-→ paste: agents/researcher/skills/research-github.md
-→ output: GitHub analysis section
-
-/ingest knowledge/projects/fptplay/pages/
-→ cập nhật knowledge/projects/fptplay/.rag/index.json
+```text
+tech-macro-regime
+  -> decide whether trend hunting is useful
+  -> tech-signal-discovery
+  -> call source/channel skills as needed
+  -> tech-trend-confirmation
+  -> output Tech-Trend-Summary, Research-Report, Social-Post, or Content-Brief
 ```
 
 ---
 
-## 🧩 ITBA Agent
+## ITBA Agent
 
 ### Research Intake & Execution
 
-| Command | Skill cần paste | Template output |
+| Command | Skill needed | Template output |
 |---|---|---|
 | `/research-intake <feature>` | `agents/itba/skills/research-intake-execution.md` | Research Intake & Execution |
 | `/execution-plan <feature>` | `agents/itba/skills/research-intake-execution.md` | Research Intake & Execution |
-| `/ba <feature>` | `agents/itba/skills/research-intake-execution.md` + document skills | Research Intake & Execution → BA Document |
+| `/ba <feature>` | `agents/itba/skills/research-intake-execution.md` + document skills | Research Intake & Execution -> BA Document |
 
-### Foundation — Optional
+### Foundation - Optional
 
-| Command | Skill cần paste | Output section |
+| Command | Skill needed | Output section |
 |---|---|---|
 | `/persona <product>` | `agents/itba/skills/persona.md` | User Persona & Mental Model |
 | `/ia <product>` | `agents/itba/skills/ia.md` | Information Architecture |
 | `/layout <product>` | `agents/itba/skills/layout.md` | Layout System |
 | `/token <product>` | `agents/itba/skills/token.md` | Token Registry |
 
-Foundation dùng template riêng `agents/itba/templates/Foundation.md` và chỉ tạo khi người dùng yêu cầu.
+Foundation uses `agents/itba/templates/Foundation.md` and is created only when the user asks.
 
-### Phase 2 — Design & Validate
+### Design & Validate
 
-| Command | Skill cần paste | Output section |
+| Command | Skill needed | Output section |
 |---|---|---|
 | `/wireframe-text <feature>` | `agents/itba/skills/wireframe-text.md` | Required text-only wireframe for BA Document |
 | `/wireframe-lofi <feature>` | `agents/itba/skills/wireframe-lofi.md` | Optional lo-fi HTML wireframe without color |
@@ -77,9 +88,9 @@ Foundation dùng template riêng `agents/itba/templates/Foundation.md` và chỉ
 | `/review-stakeholder` | `agents/itba/skills/stakeholder-review.md` | Stakeholder Review |
 | `/review-design` | `agents/itba/skills/design-critique.md` | Design Critique |
 
-### Phase 3 — Document
+### Document
 
-| Command | Skill cần paste | Output section |
+| Command | Skill needed | Output section |
 |---|---|---|
 | `/business-rules <feature>` | `agents/itba/skills/business-rules.md` | Business Rule Global |
 | `/acceptance-criteria <feature>` | `agents/itba/skills/acceptance-criteria.md` | Acceptance Criteria |
@@ -90,7 +101,7 @@ Foundation dùng template riêng `agents/itba/templates/Foundation.md` và chỉ
 
 ### Audit & UI-to-Spec
 
-| Command | Skill cần paste | Output |
+| Command | Skill needed | Output |
 |---|---|---|
 | `/audit <screen>` | `agents/itba/skills/heuristic-audit.md` | Heuristic Audit |
 | `/audit-component <component>` | `agents/itba/skills/component-audit.md` | Component Audit |
@@ -99,47 +110,21 @@ Foundation dùng template riêng `agents/itba/templates/Foundation.md` và chỉ
 | `/bpmn <flow>` | `agents/itba/skills/bpmn.md` | BPMN Flow |
 | `/usecase <feature>` | `agents/itba/skills/usecase.md` | Use Case List |
 
-### Ví dụ end-to-end
-
-```
-# BA full flow — từ request đến docs
-/ba "màn hình checkout FPTPlay"
-→ Researcher output: Research-Report
-→ paste: agents/itba/skills/research-intake-execution.md
-→ AI output: Research-Intake-Execution
-→ Review/clarify → tiếp BA Document
-
-/wireframe-text "checkout flow"
-→ paste: agents/itba/skills/wireframe-text.md
-→ AI output: Text-only wireframe for BA Document
-
-/acceptance-criteria "checkout"
-→ paste: agents/itba/skills/acceptance-criteria.md
-→ AI output: Acceptance Criteria đầy đủ
-
-# Chỉ cần một phần
-/screen [paste screenshot description]
-→ AI output: Screen Description structured
-
-/bpmn "user login flow"
-→ AI output: BPMN diagram + flow doc
-```
-
 ---
 
-## 📦 Knowledge Commands
+## Knowledge Commands
 
-| Command | Mô tả |
+| Command | Description |
 |---|---|
-| `/ingest <path>` | Ingest files vào knowledge base |
+| `/ingest <path>` | Ingest files into knowledge base |
 | `/rag <query>` | Query knowledge base |
 | `/rag-project <project> <query>` | Query project-specific knowledge |
 
 ---
 
-## 🔧 Tool Commands
+## Tool Commands
 
-| Command | Mô tả |
+| Command | Description |
 |---|---|
-| `/tool-add <name>` | Thêm tool mới vào registry (copy `tools/_template/tool.md`) |
-| `/tool-list` | Xem tất cả tools trong `tools/` |
+| `/tool-add <name>` | Add a new tool to registry by copying `tools/_template/tool.md` |
+| `/tool-list` | List tools in `tools/` |

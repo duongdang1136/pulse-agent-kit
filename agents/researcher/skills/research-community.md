@@ -2,7 +2,7 @@
 
 **Command:** `/research-community <topic>`  
 **Agent:** Researcher  
-**Output:** Community Research section trong Research-Report.md
+**Output:** Channel Evidence / Community Research section trong Research-Report.md
 
 ---
 
@@ -86,4 +86,4 @@ Phân loại ý kiến:
 
 ## Output
 
-Điền vào section **Community Research** của `templates/Research-Report.md`.
+Điền vào section **Channel Evidence / Community Research** của `templates/Research-Report.md`.
