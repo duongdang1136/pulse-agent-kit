@@ -73,8 +73,10 @@ def build_index(knowledge_root: Path, project: str, *, provider: str = "hash", m
         doc_id = document.get("id") or document.get("document_id")
         if not doc_id or document.get("status") == "deleted":
             continue
+        if document.get("rag_enabled") is False:
+            continue
         active_ids.add(doc_id)
-        page = _resolve_path(knowledge_root, document.get("page", ""))
+        page = _resolve_path(knowledge_root, document.get("page") or document.get("path", ""))
         if not page.exists():
             document["status"] = "missing"
             continue

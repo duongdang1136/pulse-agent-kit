@@ -64,6 +64,23 @@ Source priority:
 
 RAG helps find relevant knowledge quickly, but it never replaces source traceability. When RAG returns a hit, cite the underlying knowledge page and its original source, not the index itself.
 
+## Project Output Docs
+
+When Pulse is used from a local clone or writable workspace, generated workflow
+outputs may be stored outside `pulse-agent-kit/` in a project docs workspace:
+
+```text
+<project-folder>/
+  pulse-agent-kit/
+  docs/
+    <project>/
+      epics/<epic>/features/<feature>/
+```
+
+Use this only when the user has a writable local workspace. When Pulse is used
+through a GitHub URL, generated reports remain chat/session output unless the
+user manually stores them.
+
 ## Knowledge Upsert
 
 Knowledge upsert is optional and approval-gated.

@@ -113,6 +113,18 @@ Dùng được:
 - validate repository artifacts;
 - tạo commit và push changes khi có Git access.
 
+Với project thật, nên tách protocol repo và output docs ra hai folder cùng cấp:
+
+```text
+fptplay/
+  pulse-agent-kit/        protocol, CLI, agents, workflows
+  docs/                   report và deliverable do AI generate
+```
+
+`pulse-agent-kit/` là nơi chứa protocol/tooling. `docs/` là project output
+workspace, dùng để lưu Research Report, BA Document, audit, API doc, business
+rules, acceptance criteria, metrics, và các report khác theo phân cấp nghiệp vụ.
+
 ### Lưu ý về write access
 
 Không cấp direct commit/push access cho third-party AI tools, trừ khi bạn thật
@@ -336,10 +348,55 @@ CLI hỗ trợ:
 - khởi tạo workspace;
 - import tài liệu;
 - normalize knowledge;
+- lưu generated docs theo epic / feature / sub-feature;
 - build và query RAG;
 - validate repository artifacts.
 
 AI vẫn có thể sử dụng Pulse bằng cách đọc trực tiếp repository mà không cần chạy CLI.
+
+## Project output docs
+
+Khi dùng local clone, generated docs nên được lưu ngoài `pulse-agent-kit/`:
+
+```text
+fptplay/
+  pulse-agent-kit/
+  docs/
+    fptplay/
+      manifest.json
+      epics/
+        notification/
+          features/
+            notification-center/
+              ba-document.md
+              research-report.md
+              sub-features/
+                push-notification/
+                  business-rules.md
+      .rag/
+```
+
+Mỗi file được lưu theo:
+
+```text
+docs/<project>/epics/<epic>/features/<feature>/<type>.md
+docs/<project>/epics/<epic>/features/<feature>/sub-features/<sub-feature>/<type>.md
+```
+
+CLI chính:
+
+```bash
+pulse docs init ../docs --project fptplay
+pulse docs path ../docs --project fptplay --epic notification --feature notification-center --type ba-document
+pulse docs add ../docs ./ba-document.md --project fptplay --epic notification --feature notification-center --type ba-document --status reviewed
+pulse docs list ../docs --project fptplay
+pulse docs index ../docs --project fptplay
+pulse rag query fptplay "quiet hours" --include-docs --docs-workspace ../docs
+```
+
+Chỉ docs có `status` là `reviewed` hoặc `approved` mới được bật `rag_enabled`
+mặc định và được index vào docs RAG. Draft report vẫn được lưu trong manifest
+nhưng không nên dùng làm reusable context.
 
 ## Development
 

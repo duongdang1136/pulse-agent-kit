@@ -122,6 +122,29 @@ Foundation uses `agents/itba/templates/Foundation.md` and is created only when t
 
 ---
 
+## Local Docs CLI
+
+Generated docs nên được lưu trong output workspace local nằm ngoài
+`pulse-agent-kit/`, ví dụ `../docs`.
+
+```bash
+pulse docs init ../docs --project fptplay
+pulse docs path ../docs --project fptplay --epic notification --feature notification-center --type ba-document
+pulse docs add ../docs ./ba-document.md --project fptplay --epic notification --feature notification-center --type ba-document --status reviewed
+pulse docs list ../docs --project fptplay
+pulse docs index ../docs --project fptplay
+pulse rag query fptplay "quiet hours" --include-docs --docs-workspace ../docs
+```
+
+Docs được sắp xếp theo:
+
+```text
+docs/<project>/epics/<epic>/features/<feature>/<type>.md
+docs/<project>/epics/<epic>/features/<feature>/sub-features/<sub-feature>/<type>.md
+```
+
+---
+
 ## Tool Commands
 
 | Command | Description |

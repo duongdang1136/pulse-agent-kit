@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from pulse import __version__
+from pulse.docs import DOC_STATUSES, DOC_TYPES, add_doc, doc_path, init_docs_workspace, list_docs
 from pulse.knowledge import KNOWLEDGE_CATEGORIES, import_knowledge, list_knowledge
 from pulse.rag import build_index, query_index
 from pulse.project import (
@@ -49,6 +50,47 @@ def build_parser() -> argparse.ArgumentParser:
     knowledge_list = knowledge_sub.add_parser("list", help="List normalized project knowledge pages")
     knowledge_list.add_argument("project", help="Project slug or name")
 
+    docs = sub.add_parser("docs", help="Manage generated project output docs")
+    docs_sub = docs.add_subparsers(dest="docs_command", required=True)
+    docs_init = docs_sub.add_parser("init", help="Initialize an external docs workspace")
+    docs_init.add_argument("workspace", type=Path, help="Docs workspace path, for example ../docs")
+    docs_init.add_argument("--project", required=True, help="Project slug or name")
+
+    docs_add = docs_sub.add_parser("add", help="Add or update a generated doc in the docs workspace")
+    docs_add.add_argument("workspace", type=Path)
+    docs_add.add_argument("source", type=Path, help="Generated markdown report to store")
+    docs_add.add_argument("--project", required=True)
+    docs_add.add_argument("--type", required=True, choices=sorted(DOC_TYPES), dest="doc_type")
+    docs_add.add_argument("--epic", required=True)
+    docs_add.add_argument("--feature", required=True)
+    docs_add.add_argument("--sub-feature", default="")
+    docs_add.add_argument("--status", default="draft", choices=sorted(DOC_STATUSES))
+    docs_add.add_argument("--title", default="")
+    docs_add.add_argument("--overwrite", action="store_true")
+
+    docs_list = docs_sub.add_parser("list", help="List generated docs in the docs workspace")
+    docs_list.add_argument("workspace", type=Path)
+    docs_list.add_argument("--project", required=True)
+    docs_list.add_argument("--type", choices=sorted(DOC_TYPES), dest="doc_type")
+    docs_list.add_argument("--epic")
+    docs_list.add_argument("--feature")
+
+    docs_path = docs_sub.add_parser("path", help="Print the target path for a generated doc")
+    docs_path.add_argument("workspace", type=Path)
+    docs_path.add_argument("--project", required=True)
+    docs_path.add_argument("--type", required=True, choices=sorted(DOC_TYPES), dest="doc_type")
+    docs_path.add_argument("--epic", required=True)
+    docs_path.add_argument("--feature", required=True)
+    docs_path.add_argument("--sub-feature", default="")
+
+    docs_index = docs_sub.add_parser("index", help="Build a RAG index for reviewed/approved generated docs")
+    docs_index.add_argument("workspace", type=Path)
+    docs_index.add_argument("--project", required=True)
+    docs_index.add_argument("--provider", default="hash", choices=["hash", "local", "openai"])
+    docs_index.add_argument("--model")
+    docs_index.add_argument("--batch-size", type=int, default=64)
+    docs_index.add_argument("--force", action="store_true")
+
     rag = sub.add_parser("rag", help="Build or query the existing RAG index")
     rag_sub = rag.add_subparsers(dest="rag_command", required=True)
     rag_build = rag_sub.add_parser("build", help="Build a project's RAG index")
@@ -66,6 +108,17 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Query project knowledge and shared knowledge, then merge ranked hits",
     )
+    rag_query.add_argument(
+        "--include-docs",
+        action="store_true",
+        help="Query reviewed/approved generated docs together with project knowledge",
+    )
+    rag_query.add_argument(
+        "--docs-workspace",
+        type=Path,
+        default=Path("../docs"),
+        help="Docs workspace path used with --include-docs",
+    )
 
     sub.add_parser("doctor", help="Check repository and project workspace health")
     sub.add_parser("validate", help="Run the repository validator")
@@ -80,6 +133,8 @@ def main(argv: list[str] | None = None) -> int:
             return _handle_project(root, args)
         if args.command == "knowledge":
             return _handle_knowledge(root, args)
+        if args.command == "docs":
+            return _handle_docs(root, args)
         if args.command == "rag":
             return _handle_rag(root, args)
         if args.command == "doctor":
@@ -145,6 +200,69 @@ def _handle_knowledge(root: Path, args: argparse.Namespace) -> int:
     return 0
 
 
+def _handle_docs(root: Path, args: argparse.Namespace) -> int:
+    if args.docs_command == "init":
+        workspace = init_docs_workspace(args.workspace, args.project)
+        print(f"Docs workspace: {workspace.project_root}")
+        print(f"Manifest: {workspace.manifest_path}")
+        return 0
+    if args.docs_command == "add":
+        record = add_doc(
+            args.workspace,
+            args.project,
+            args.source,
+            doc_type=args.doc_type,
+            epic=args.epic,
+            feature=args.feature,
+            sub_feature=args.sub_feature,
+            status=args.status,
+            title=args.title,
+            overwrite=args.overwrite,
+        )
+        print(f"{record.status.upper()}: {record.id} -> {record.path}")
+        return 0
+    if args.docs_command == "list":
+        rows = list_docs(
+            args.workspace,
+            args.project,
+            doc_type=args.doc_type,
+            epic=args.epic,
+            feature=args.feature,
+        )
+        if not rows:
+            print("No generated docs found.")
+            return 0
+        for item in rows:
+            print(
+                f"{item.get('id')}\t{item.get('type')}\t{item.get('status')}\t"
+                f"{item.get('epic')}/{item.get('feature')}\t{item.get('path')}"
+        )
+        return 0
+    if args.docs_command == "index":
+        workspace = init_docs_workspace(args.workspace, args.project)
+        report = build_index(
+            workspace.project_root,
+            workspace.project,
+            provider=args.provider,
+            model=args.model,
+            batch_size=args.batch_size,
+            force=args.force,
+        )
+        print(f"Indexed: {report.indexed}; skipped: {report.skipped}; removed: {report.removed}")
+        print(f"Chunks: {report.chunks}; embedding: {report.provider}/{report.model}")
+        return 0
+    target = doc_path(
+        args.workspace,
+        args.project,
+        args.doc_type,
+        args.epic,
+        args.feature,
+        args.sub_feature,
+    )
+    print(target)
+    return 0
+
+
 def _handle_rag(root: Path, args: argparse.Namespace) -> int:
     project = read_project(root, args.project)
     target = root / project.knowledge_path
@@ -166,6 +284,12 @@ def _handle_rag(root: Path, args: argparse.Namespace) -> int:
         if _has_queryable_rag(shared):
             scoped_results.extend(
                 ("shared", result) for result in query_index(shared, args.query, top_k=args.top_k)
+            )
+    if args.include_docs:
+        docs_root = args.docs_workspace.expanduser().resolve() / project.slug
+        if _has_queryable_rag(docs_root):
+            scoped_results.extend(
+                ("docs", result) for result in query_index(docs_root, args.query, top_k=args.top_k)
             )
     scoped_results.sort(key=lambda item: item[1].score, reverse=True)
     scoped_results = scoped_results[: args.top_k]
