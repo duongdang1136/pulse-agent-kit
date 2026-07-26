@@ -56,44 +56,45 @@ Hoặc cung cấp trực tiếp URL repository cho AI:
 https://github.com/duongdang1136/pulse-agent-kit
 ```
 
-## Usage modes and feature limits
+## Các cách sử dụng và giới hạn tính năng
 
-Pulse can be used in more than one mode. The available features depend on
-whether the AI can write to the repository and run the CLI.
+Pulse có thể được dùng theo nhiều cách. Tính năng dùng được phụ thuộc vào việc
+AI có quyền ghi vào repository và có chạy được CLI hay không.
 
-### Mode 1 - Read from GitHub URL
+### Mode 1 - Đọc từ GitHub URL
 
-Use this when you give an AI the published repository link:
+Dùng cách này khi bạn đưa link repository đã publish cho AI:
 
 ```text
 https://github.com/duongdang1136/pulse-agent-kit
 ```
 
-In this mode, Pulse works as a read-only instruction protocol.
+Ở mode này, Pulse hoạt động như một instruction protocol dạng read-only.
 
-Available:
+Dùng được:
 
-- read `PULSE.md`, workflows, agents, skills, and templates;
-- follow the feature-documentation workflow;
-- produce Research Reports, BA Documents, audits, briefs, and recommendations in the chat/session;
-- use existing repository files as context if the AI can read GitHub.
+- đọc `PULSE.md`, workflows, agents, skills, và templates;
+- chạy theo workflow feature-documentation;
+- tạo Research Report, BA Document, audit, brief, và recommendation trong chat/session;
+- dùng các file có sẵn trong repository làm context nếu AI đọc được GitHub.
 
-Not available by default:
+Mặc định không dùng được:
 
-- create or update files in the repository;
-- run `pulse knowledge import`;
+- tạo hoặc update file trong repository;
+- chạy `pulse knowledge import`;
 - upsert knowledge pages;
 - rebuild `.rag/` indexes;
-- persist generated reports back into the repo;
-- commit or push changes.
+- lưu report đã generate ngược lại vào repo;
+- commit hoặc push changes.
 
-If a report or knowledge update is generated in this mode, the user must copy it
-into the repository or rerun the task in a local clone / writable workspace.
+Nếu AI tạo report hoặc đề xuất update knowledge trong mode này, người dùng cần
+tự đưa nội dung đó vào repository, hoặc chạy lại task trong local clone /
+writable workspace.
 
-### Mode 2 - Local clone or writable workspace
+### Mode 2 - Local clone hoặc writable workspace
 
-Use this when the repository is cloned locally and the AI/tooling has filesystem
-write access:
+Dùng cách này khi repository đã được clone về local và AI/tooling có quyền ghi
+filesystem:
 
 ```bash
 git clone https://github.com/duongdang1136/pulse-agent-kit.git
@@ -101,23 +102,23 @@ cd pulse-agent-kit
 python -m pip install -e ".[dev]"
 ```
 
-Available:
+Dùng được:
 
-- all read-only protocol features;
-- create projects and workspace files;
-- import/upsert project knowledge with `pulse knowledge import`;
-- set import category with `--category`;
-- rebuild and query RAG indexes;
-- query project knowledge together with shared knowledge using `--include-shared`;
+- toàn bộ tính năng read-only protocol;
+- tạo project và workspace files;
+- import/upsert project knowledge bằng `pulse knowledge import`;
+- set import category bằng `--category`;
+- rebuild và query RAG indexes;
+- query project knowledge cùng shared knowledge bằng `--include-shared`;
 - validate repository artifacts;
-- create commits and push changes when Git access is available.
+- tạo commit và push changes khi có Git access.
 
-### Write access note
+### Lưu ý về write access
 
-Do not give third-party AI tools direct commit/push access unless you explicitly
-trust that environment and want it to modify the repository. For normal usage,
-share the GitHub URL as read-only context, or work from a local clone where you
-control which changes are committed and pushed.
+Không cấp direct commit/push access cho third-party AI tools, trừ khi bạn thật
+sự tin môi trường đó và muốn nó chỉnh repository. Cách dùng bình thường là đưa
+GitHub URL như read-only context, hoặc làm việc trong local clone để bạn kiểm
+soát thay đổi nào được commit và push.
 
 ### 2. Yêu cầu AI đọc protocol
 
