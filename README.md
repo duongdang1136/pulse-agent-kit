@@ -56,6 +56,69 @@ Hoặc cung cấp trực tiếp URL repository cho AI:
 https://github.com/duongdang1136/pulse-agent-kit
 ```
 
+## Usage modes and feature limits
+
+Pulse can be used in more than one mode. The available features depend on
+whether the AI can write to the repository and run the CLI.
+
+### Mode 1 - Read from GitHub URL
+
+Use this when you give an AI the published repository link:
+
+```text
+https://github.com/duongdang1136/pulse-agent-kit
+```
+
+In this mode, Pulse works as a read-only instruction protocol.
+
+Available:
+
+- read `PULSE.md`, workflows, agents, skills, and templates;
+- follow the feature-documentation workflow;
+- produce Research Reports, BA Documents, audits, briefs, and recommendations in the chat/session;
+- use existing repository files as context if the AI can read GitHub.
+
+Not available by default:
+
+- create or update files in the repository;
+- run `pulse knowledge import`;
+- upsert knowledge pages;
+- rebuild `.rag/` indexes;
+- persist generated reports back into the repo;
+- commit or push changes.
+
+If a report or knowledge update is generated in this mode, the user must copy it
+into the repository or rerun the task in a local clone / writable workspace.
+
+### Mode 2 - Local clone or writable workspace
+
+Use this when the repository is cloned locally and the AI/tooling has filesystem
+write access:
+
+```bash
+git clone https://github.com/duongdang1136/pulse-agent-kit.git
+cd pulse-agent-kit
+python -m pip install -e ".[dev]"
+```
+
+Available:
+
+- all read-only protocol features;
+- create projects and workspace files;
+- import/upsert project knowledge with `pulse knowledge import`;
+- set import category with `--category`;
+- rebuild and query RAG indexes;
+- query project knowledge together with shared knowledge using `--include-shared`;
+- validate repository artifacts;
+- create commits and push changes when Git access is available.
+
+### Write access note
+
+Do not give third-party AI tools direct commit/push access unless you explicitly
+trust that environment and want it to modify the repository. For normal usage,
+share the GitHub URL as read-only context, or work from a local clone where you
+control which changes are committed and pushed.
+
 ### 2. Yêu cầu AI đọc protocol
 
 ```text
